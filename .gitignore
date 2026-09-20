@@ -1,0 +1,16 @@
+# 打包产物
+*.zip
+dist/
+
+# 开发工具的缓存
+dev/__pycache__/
+dev/*.pyc
+
+# 测试产物（夹具是抓下来的真实页面，体积大，不进版本库；
+# 跑测试时 run_tests.sh 会自动抓一份）
+dev/fixtures/*.html
+
+# macOS
+.DS_Store
+__MACOSX/
+dev/__pycache__/

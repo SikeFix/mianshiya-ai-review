@@ -1,0 +1,84 @@
+{
+  "manifest_version": 3,
+  "name": "面试鸭 AI 复习助手",
+  "version": "0.1.0",
+  "description": "在面试鸭题目页注入 AI 陪练面板：模拟面试、讲解、追问、自测，支持语音对话，兼容多种大模型。",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "面试鸭 AI 复习助手",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "offscreen",
+    "activeTab",
+    "downloads",
+    "clipboardWrite"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.mianshiya.com/*",
+        "https://mianshiya.com/*"
+      ],
+      "js": [
+        "shared/config.js",
+        "shared/store.js",
+        "shared/notes.js",
+        "shared/srs.js",
+        "shared/report.js",
+        "content/util.js",
+        "content/md.js",
+        "content/extract.js",
+        "content/tts.js",
+        "content/asr.js",
+        "content/ui.js",
+        "content/main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "toggle-panel": {
+      "suggested_key": {
+        "default": "Alt+Shift+M"
+      },
+      "description": "显示 / 隐藏 AI 复习面板"
+    },
+    "toggle-mic": {
+      "suggested_key": {
+        "default": "Alt+Shift+V"
+      },
+      "description": "开始 / 停止语音输入"
+    },
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      }
+    }
+  }
+}

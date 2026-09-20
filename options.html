@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>面试鸭 AI 复习助手 · 设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <div class="brand">
+          <img src="icons/icon48.png" alt="" />
+          <div>
+            <h1>面试鸭 AI 复习助手</h1>
+            <p>配一次就能用。至少填一个 AI 服务商的 API Key。</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button id="btnExport" type="button">导出配置</button>
+          <button id="btnImport" type="button">导入配置</button>
+          <input type="file" id="fileImport" accept="application/json,.json" hidden />
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <nav class="tabs" id="tabs">
+        <button type="button" data-tab="ai" class="active">AI 方案</button>
+        <button type="button" data-tab="voice">语音</button>
+        <button type="button" data-tab="chat">对话与提示词</button>
+        <button type="button" data-tab="notes">笔记</button>
+        <button type="button" data-tab="report">学习报告</button>
+        <button type="button" data-tab="ui">界面</button>
+        <button type="button" data-tab="help">帮助</button>
+      </nav>
+
+      <main>
+        <!-- ==================== AI 方案 ==================== -->
+        <section class="panel active" data-panel="ai">
+          <div class="card">
+            <h2>AI 方案 <span class="tip">可以存多套，在页面上随时切换</span></h2>
+            <p class="sub">
+              全部走 OpenAI 兼容的 <code>/chat/completions</code> 接口，所以 DeepSeek、通义、Kimi、GLM、
+              豆包、OpenAI、本地 Ollama 都能用同一个面板。
+            </p>
+            <div class="split">
+              <div class="left">
+                <div class="plist" id="plist"></div>
+                <button class="btn" id="btnAddProfile" type="button" style="width:100%;margin-top:8px">＋ 新增方案</button>
+              </div>
+
+              <div class="right">
+                <div class="field">
+                  <label for="pPreset">服务商预设（一键填入地址和模型）</label>
+                  <select id="pPreset"></select>
+                  <div class="hint" id="presetHint"></div>
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label for="pName">方案名称</label>
+                    <input type="text" id="pName" placeholder="例如：DeepSeek" />
+                  </div>
+                  <div class="field">
+                    <label for="pModel">模型名</label>
+                    <input type="text" id="pModel" list="modelList" placeholder="例如：deepseek-chat" />
+                    <datalist id="modelList"></datalist>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="pBaseUrl">接口地址 Base URL</label>
+                  <input type="text" id="pBaseUrl" placeholder="https://api.deepseek.com/v1" spellcheck="false" />
+                  <div class="hint">末尾一般要带 <code>/v1</code>，插件会自动拼上 <code>/chat/completions</code>。</div>
+                </div>
+
+                <div class="field">
+                  <label for="pApiKey">API Key</label>
+                  <div class="row tight">
+                    <input type="password" id="pApiKey" placeholder="sk-..." spellcheck="false" autocomplete="off" />
+                    <button class="btn" id="btnShowKey" type="button" style="flex:0 0 auto">显示</button>
+                  </div>
+                  <div class="hint" id="keyHint"></div>
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label for="pTemp">温度 temperature</label>
+                    <input type="number" id="pTemp" min="0" max="2" step="0.1" />
+                    <div class="hint">越低越稳定。复习场景 0.5 ~ 0.7 比较合适。</div>
+                  </div>
+                  <div class="field">
+                    <label for="pMaxTokens">最大输出 token</label>
+                    <input type="number" id="pMaxTokens" min="256" max="32000" step="256" />
+                    <div class="hint">面试题讲解一般 2048 够用。</div>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="pExtra">自定义请求参数（JSON，可留空）</label>
+                  <textarea id="pExtra" rows="2" spellcheck="false"
+                    placeholder='例如：{"chat_template_kwargs":{"enable_thinking":false}}'></textarea>
+                  <div class="hint">
+                    会原样合并进请求体，用来应付各家的小差异。有些推理模型（Qwen3、GLM-Z 之类）
+                    默认会先想一大段再回答，在这里关掉思考链会快很多、也省 token。
+                    <code>model</code> / <code>messages</code> / <code>stream</code> 不允许被覆盖。
+                  </div>
+                </div>
+
+                <div class="btn-row" style="margin-top:4px">
+                  <button class="btn primary" id="btnSaveProfile" type="button">保存</button>
+                  <button class="btn" id="btnTestProfile" type="button">测试连接</button>
+                  <button class="btn" id="btnDupProfile" type="button">复制一份</button>
+                  <button class="btn danger" id="btnDelProfile" type="button" style="margin-left:auto">删除</button>
+                </div>
+
+                <div class="note hidden" id="testResult"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 语音 ==================== -->
+        <section class="panel" data-panel="voice">
+          <div class="card">
+            <h2>语音输入</h2>
+            <p class="sub">开口答题、AI 听完给点评，这是复习效率最高的用法。</p>
+
+            <div class="radio-group" id="asrEngines">
+              <div class="radio-card" data-engine="builtin">
+                <div class="t">🎙️ 浏览器内置识别</div>
+                <div class="d">零配置、零成本、说完立刻出字。
+但 Chrome 走 Google 服务器，国内通常连不上；Edge 走微软服务器，国内可直连。
+缺点是识别结果没有标点。</div>
+              </div>
+              <div class="radio-card" data-engine="cloud">
+                <div class="t">☁️ 云端转写</div>
+                <div class="d">录完整段音频再发给语音转写接口。准确率高、自带标点、长句更稳，
+不挑网络环境。需要配一个转写服务（可以和对话用同一个 Key）。</div>
+              </div>
+            </div>
+
+            <div class="note info" id="builtinNote"></div>
+
+            <div id="cloudBox" style="margin-top:16px">
+              <div class="field">
+                <label for="asrPreset">转写服务预设</label>
+                <select id="asrPreset"></select>
+                <div class="hint" id="asrPresetHint"></div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label for="asrBaseUrl">Base URL</label>
+                  <input type="text" id="asrBaseUrl" spellcheck="false" />
+                </div>
+                <div class="field">
+                  <label for="asrModel">模型名</label>
+                  <input type="text" id="asrModel" spellcheck="false" />
+                </div>
+              </div>
+              <label class="check">
+                <input type="checkbox" id="asrReuse" />
+                <span>
+                  <span class="lbl">复用当前对话方案的 Key 和地址</span>
+                  <span class="desc">硅基流动、OpenAI 这类服务商，对话和语音转写用同一个 Key 就行，勾上就不用重复填。</span>
+                </span>
+              </label>
+              <div class="field" id="asrKeyField">
+                <label for="asrApiKey">语音转写专用 API Key</label>
+                <input type="password" id="asrApiKey" spellcheck="false" autocomplete="off" />
+              </div>
+              <button class="btn" id="btnMicAuth" type="button">授权麦克风</button>
+              <div class="note hidden" id="micResult"></div>
+            </div>
+
+            <label class="check">
+              <input type="checkbox" id="asrVoiceMode" />
+              <span>
+                <span class="lbl">语音对话模式（像真人面试一样自动来回）</span>
+                <span class="desc">
+                  开启后 AI 念完会自动开始听你说，你说完自动发送、它自动念出新回复，一轮接一轮不用碰键盘；
+                  云端引擎还能在你一开口时就把朗读掐掉。<br>
+                  这个开关在<b>面板底部</b>也有一个按钮，可以随时切，不用回来设置页。
+                  默认关闭 —— 模拟面试和费曼最常用到，讲解、速记这类你要看它讲的时候开着只会碍事。
+                </span>
+              </span>
+            </label>
+
+            <label class="check" id="bargeRow">
+              <input type="checkbox" id="asrBarge" />
+              <span>
+                <span class="lbl">我开口时打断朗读</span>
+                <span class="desc">只对「云端转写」有效 —— 内置识别拿不到音频流，做不了这个判断。</span>
+              </span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="asrAutoStop" />
+              <span>
+                <span class="lbl">说完停顿自动结束</span>
+                <span class="desc">关掉就必须自己再点一次麦克风才会停。</span>
+              </span>
+            </label>
+
+            <div class="row" style="margin-top:14px">
+              <div class="field">
+                <label for="asrSilence">停顿多久算说完了（毫秒）</label>
+                <input type="number" id="asrSilence" min="800" max="5000" step="100" />
+                <div class="hint" id="silenceHint">默认 1200 毫秒。</div>
+              </div>
+            </div>
+
+            <label class="check">
+              <input type="checkbox" id="asrAutoSend" />
+              <span>
+                <span class="lbl">识别完自动发送</span>
+                <span class="desc">说完直接发给 AI，全程不用碰键盘。模拟面试时建议打开。</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="card">
+            <h2>语音播报 <span class="tip">让 AI 把回复念出来</span></h2>
+            <label class="check">
+              <input type="checkbox" id="ttsAuto" />
+              <span>
+                <span class="lbl">自动朗读 AI 的回复</span>
+                <span class="desc">边生成边按句朗读，不用等整段写完。用系统自带语音，不花钱、可离线。<br>
+                  你一按录音（或直接开口说话），朗读会立刻停下让位。</span>
+              </span>
+            </label>
+            <div class="row">
+              <div class="field">
+                <label for="ttsVoice">发音人</label>
+                <select id="ttsVoice"></select>
+              </div>
+              <div class="field">
+                <label for="ttsRate">语速 <span id="rateLabel"></span></label>
+                <input type="range" id="ttsRate" min="0.6" max="1.8" step="0.05" style="width:100%" />
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="btnTtsTest" type="button">试听</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 对话与提示词 ==================== -->
+        <section class="panel" data-panel="chat">
+          <div class="card">
+            <h2>对话行为</h2>
+            <label class="check">
+              <input type="checkbox" id="chatStream" />
+              <span>
+                <span class="lbl">流式输出（打字机效果）</span>
+                <span class="desc">关掉的话要等整段生成完才显示，一般不用关。</span>
+              </span>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="chatSendEnter" />
+              <span>
+                <span class="lbl">Enter 直接发送</span>
+                <span class="desc">关闭后改用 Ctrl / ⌘ + Enter 发送，Enter 只换行。</span>
+              </span>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="chatIncludeRef" />
+              <span>
+                <span class="lbl">把页面上的参考答案一并提供给 AI</span>
+                <span class="desc">AI 会参考本站答案来讲解和打分，更贴合面试鸭的口径。关掉则完全基于 AI 自己的知识。</span>
+              </span>
+            </label>
+            <div class="field">
+              <label for="personaSel">面试官人设</label>
+              <select id="personaSel"></select>
+              <div class="hint">只在「模拟面试」和「追问」模式下生效，会加在提示词最前面。换个语气，复习的体感完全不一样。</div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="chatTurns">保留多少轮对话历史</label>
+                <input type="number" id="chatTurns" min="1" max="50" />
+                <div class="hint">越大越有上下文，也越费 token。</div>
+              </div>
+              <div class="field">
+                <label for="chatAnswerChars">参考答案截断长度（字）</label>
+                <input type="number" id="chatAnswerChars" min="500" max="20000" step="500" />
+                <div class="hint">太长的答案会挤占上下文，默认 6000 字。</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>模式提示词 <span class="tip">改完立刻生效，可以按自己的习惯调</span></h2>
+            <p class="sub">
+              可用占位符：<code>{title}</code> 会替换成题目，<code>{reference}</code> 会替换成页面上的参考答案。
+            </p>
+            <div class="prompt-tabs" id="promptTabs"></div>
+            <div class="prompt-box">
+              <textarea id="promptText" spellcheck="false"></textarea>
+            </div>
+            <div class="btn-row" style="margin-top:10px">
+              <button class="btn primary" id="btnSavePrompt" type="button">保存提示词</button>
+              <button class="btn" id="btnResetPrompt" type="button">恢复本模式默认</button>
+              <button class="btn" id="btnResetAllPrompts" type="button">全部恢复默认</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 笔记 ==================== -->
+        <section class="panel" data-panel="notes">
+          <div class="card">
+            <h2>保存到本地 <span class="tip">题目、答案、对话存成 Markdown</span></h2>
+            <p class="sub">
+              一道题一个 <code>.md</code> 文件，存在浏览器下载目录下的一个子文件夹里。
+              存出来的是纯文本，可以直接拖进 Obsidian、Typora、VS Code 或者你自己的笔记库。
+            </p>
+
+            <label class="check">
+              <input type="checkbox" id="saveAuto" />
+              <span>
+                <span class="lbl">每轮 AI 回答后自动更新文件</span>
+                <span class="desc">不用手动点「存笔记」，复盘记录会自动写进同一份文件（覆盖更新，不会堆副本）。</span>
+              </span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="saveChat" />
+              <span>
+                <span class="lbl">文件里包含 AI 对话记录</span>
+                <span class="desc">关掉就只存题目和参考答案，文件更干净。</span>
+              </span>
+            </label>
+
+            <div class="field">
+              <label for="saveFolderBy">存笔记时怎么分文件夹</label>
+              <select id="saveFolderBy">
+                <option value="flat">平铺，所有笔记放一起</option>
+                <option value="bank">按题库分文件夹</option>
+                <option value="tag">按第一个标签分文件夹</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="saveFolder">文件夹名</label>
+              <input type="text" id="saveFolder" placeholder="面试鸭笔记" />
+              <div class="hint">
+                相对于浏览器的下载目录。想换位置就去
+                <code>chrome://settings/downloads</code> 改「下载位置」，
+                或者把它设成「每次询问」，每存一次自己选目录。
+              </div>
+            </div>
+
+            <div class="note info" id="saveWhere"></div>
+          </div>
+
+          <div class="card">
+            <h2>间隔复习 <span class="tip">答得不好的题会自动回来找你</span></h2>
+            <p class="sub">
+              在面板上每答完一题，点一下「完全不会 / 有点模糊 / 记住了 / 太简单」自评一次。
+              每个选项对应不同的复习间隔，到期的题会重新冒出来 —— 攒着的题才有机会被翻出来看第二遍。
+            </p>
+            <div class="srs-stats" id="srsStats"></div>
+            <div class="btn-row" style="margin-top:14px">
+              <button class="btn primary" id="btnExportDue" type="button">导出待复习清单</button>
+            </div>
+            <div class="note info">
+              间隔是乘法递增的：评为「记住了」会按难度因子拉长（1 天 → 2.5 天 → 6 天……），
+              评为「完全不会」会把间隔清零、10 分钟后再来，并降低这道题的难度因子，
+              让它之后涨得慢一些。单题最长间隔 180 天。
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>复习记录 <span class="tip" id="notesCount"></span></h2>
+            <p class="sub">
+              每轮对话都会记在浏览器本地（<code>chrome.storage.local</code>），刷新页面、切题都不会丢。
+              这里可以一次性导出成一份汇总笔记。
+            </p>
+            <div class="notes-tools">
+              <input type="search" id="noteSearch" placeholder="搜题目或标签…" />
+              <select id="noteFilter">
+                <option value="">全部状态</option>
+                <option value="due">待复习</option>
+                <option value="again">完全不会</option>
+                <option value="hard">有点模糊</option>
+                <option value="good">记住了 / 太简单</option>
+                <option value="new">还没自评</option>
+              </select>
+              <span class="notes-filtered" id="notesFiltered"></span>
+            </div>
+            <div class="notes-list" id="notesList"></div>
+            <div class="field" style="margin-top:14px">
+              <label for="exportDim">导出方式</label>
+              <select id="exportDim">
+                <option value="">合并成一份</option>
+                <option value="bank">按题库分开导出</option>
+                <option value="tag">按标签分开导出</option>
+                <option value="difficulty">按难度分开导出</option>
+                <option value="custom">按我的分类分开导出</option>
+              </select>
+              <div class="hint">按分类导出时，每一类会生成一个同名文件夹和一份汇总 md，方便整包拖进笔记库。</div>
+            </div>
+            <div class="btn-row">
+              <button class="btn primary" id="btnExportAll" type="button">导出复习记录</button>
+              <button class="btn danger" id="btnClearNotes" type="button">清空本地记录</button>
+            </div>
+            <div class="note hidden" id="notesMsg"></div>
+          </div>
+        </section>
+
+        <!-- ==================== 学习报告 ==================== -->
+        <section class="panel" data-panel="report">
+          <div class="card">
+            <h2>学习报告 <span class="tip">哪块行、哪块不行，一眼看到</span></h2>
+            <p class="sub">
+              按<b>标签</b>和<b>速记关键词</b>两个维度把题目聚起来，算出每块知识的薄弱分，
+              再给出下一步该补哪里。数据全部来自你本机的复习记录。
+            </p>
+            <div class="btn-row">
+              <button class="btn primary" id="btnExportReport" type="button">导出成网页</button>
+              <button class="btn" id="btnRefreshReport" type="button">刷新</button>
+            </div>
+            <div class="note hidden" id="reportMsg"></div>
+          </div>
+
+          <div class="card">
+            <h2>AI 帮我分析 <span class="tip">把上面的统计交给 AI 诊断</span></h2>
+            <p class="sub">会把掌握率、薄弱知识点、没掌握的题目标题发给 AI，让它诊断问题并给出接下来三天的安排。</p>
+            <div class="btn-row">
+              <button class="btn primary" id="btnAiAnalyze" type="button">让 AI 分析薄弱点</button>
+            </div>
+            <div class="note hidden" id="aiAnalyzeMsg"></div>
+            <div class="ai-report hidden" id="aiReport"></div>
+          </div>
+
+          <div class="card">
+            <h2>思维导图</h2>
+            <p class="sub">点标题展开或收起，点题目直接打开原题</p>
+            <div id="mindMap"></div>
+          </div>
+
+          <div id="reportBody"></div>
+        </section>
+
+        <!-- ==================== 界面 ==================== -->
+        <section class="panel" data-panel="ui">
+          <div class="card">
+            <h2>面板外观</h2>
+            <div class="field">
+              <label for="uiTheme">主题</label>
+              <select id="uiTheme">
+                <option value="auto">跟随站点（自动判断深色 / 浅色）</option>
+                <option value="light">始终浅色</option>
+                <option value="dark">始终深色</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="uiWidth">面板宽度（像素）</label>
+                <input type="number" id="uiWidth" min="320" max="900" step="10" />
+              </div>
+              <div class="field">
+                <label for="uiHeight">面板高度（像素）</label>
+                <input type="number" id="uiHeight" min="320" max="1200" step="10" />
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="btnResetLayout" type="button">恢复默认尺寸与位置</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>快捷键</h2>
+            <table class="help" style="margin-top:6px">
+              <tr><th style="width:180px">快捷键</th><th>作用</th></tr>
+              <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd></td><td>显示 / 隐藏面板</td></tr>
+              <tr><td><kbd>M</kbd></td><td>开始 / 停止语音输入（光标不在输入框里时都能用）</td></tr>
+              <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td><td>同上，全局生效（切到别的标签页也能按）</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>清空输入框</td></tr>
+              <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd></td><td>打开扩展菜单</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>发送（可在「对话」标签页改成 Ctrl+Enter）</td></tr>
+              <tr><td><kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>换行</td></tr>
+            </table>
+            <div class="note info">
+              快捷键是 Chrome 分配的，如果和别的扩展或系统快捷键冲突，可以到
+              <code>chrome://extensions/shortcuts</code> 改成顺手的组合。
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>总开关</h2>
+            <label class="check">
+              <input type="checkbox" id="globalEnabled" />
+              <span>
+                <span class="lbl">在面试鸭页面上显示 AI 面板</span>
+                <span class="desc">关掉后所有页面都不再注入面板，相当于临时禁用。</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <!-- ==================== 帮助 ==================== -->
+        <section class="panel" data-panel="help">
+          <div class="card help">
+            <h2>五分钟上手</h2>
+            <ol>
+              <li>在「AI 方案」里选一个服务商，填上 API Key，点「测试连接」，看到绿字就成了。</li>
+              <li>打开任意一道题，比如 <a href="https://www.mianshiya.com/question/1780933295660363778" target="_blank" rel="noreferrer">Redis 中如何实现分布式锁？</a>，右下角会出现悬浮球。</li>
+              <li>点开悬浮球，选「🎤 模拟面试」，AI 会开始提问。按住麦克风开口答，说完停顿一下就自动提交。</li>
+            </ol>
+
+            <h3>API Key 去哪儿拿</h3>
+            <table>
+              <tr><th>服务商</th><th>特点</th><th>注册地址</th></tr>
+              <tr>
+                <td>DeepSeek</td>
+                <td>中文强、便宜，充 10 元能用很久。新手首选。</td>
+                <td><a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noreferrer">platform.deepseek.com</a></td>
+              </tr>
+              <tr>
+                <td>硅基流动</td>
+                <td>有免费额度；<strong>同一个 Key 能同时做对话和语音转写</strong>，最省事。</td>
+                <td><a href="https://cloud.siliconflow.cn/account/ak" target="_blank" rel="noreferrer">cloud.siliconflow.cn</a></td>
+              </tr>
+              <tr>
+                <td>阿里云百炼</td>
+                <td>通义千问，新用户有免费 token。</td>
+                <td><a href="https://bailian.console.aliyun.com/" target="_blank" rel="noreferrer">bailian.console.aliyun.com</a></td>
+              </tr>
+              <tr>
+                <td>智谱 GLM</td>
+                <td>glm-4-flash 有免费版本。</td>
+                <td><a href="https://bigmodel.cn/usercenter/apikeys" target="_blank" rel="noreferrer">bigmodel.cn</a></td>
+              </tr>
+              <tr>
+                <td>Ollama（本地）</td>
+                <td>完全免费离线，需要先 <code>ollama pull qwen2.5:7b</code>。</td>
+                <td><a href="https://ollama.com/download" target="_blank" rel="noreferrer">ollama.com</a></td>
+              </tr>
+            </table>
+
+            <h3>常见问题</h3>
+            <p><strong>点麦克风提示「连不上浏览器语音识别服务」</strong><br />
+              这是国内 Chrome 的固有问题 —— 它的内置识别要用 Google 服务器。两个办法：换 Edge 浏览器（微软服务器国内可直连），
+              或者到「语音」标签页把引擎切到「云端转写」。</p>
+
+            <p><strong>提示「API Key 被拒绝」</strong><br />
+              检查 Key 有没有复制全（前后别带空格）、账户有没有欠费。有些服务商的 Key 需要先在后台开通对应模型。</p>
+
+            <p><strong>提示「网络请求发不出去」</strong><br />
+              第一次用某个服务商时，Chrome 会弹窗问是否允许扩展访问该网站，必须点「允许」。如果当时点了拒绝，
+              回到「AI 方案」重新点一次「保存」会再弹一次。</p>
+
+            <p><strong>抓不到答案 / 一直提示会员墙</strong><br />
+              完整答案在面试鸭是会员内容，插件只读你屏幕上已经显示出来的东西，不会去绕过会员墙。
+              这种情况下 AI 会用自己的知识来讲解和打分，右下角会标出来来源。</p>
+
+            <p><strong>AI 回答被截断了</strong><br />
+              到「AI 方案」把「最大输出 token」调大。</p>
+
+            <h3>隐私说明</h3>
+            <ul>
+              <li>API Key 只存在本机浏览器的 <code>chrome.storage.local</code> 里，<strong>不会</strong>同步到 Google 账号，也不经过任何中间服务器。</li>
+              <li>只有你点击发送时，题目和对话内容才会直接发给你自己配置的那个 AI 服务商。</li>
+              <li>录音只在本地处理，直接发给你配置的转写服务，不上传到别处。</li>
+              <li>插件不会修改面试鸭的任何数据，也不会调用它需要会员权限的接口。</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="shared/config.js"></script>
+    <script src="shared/store.js"></script>
+    <script src="shared/notes.js"></script>
+    <script src="shared/srs.js"></script>
+    <script src="shared/report.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
