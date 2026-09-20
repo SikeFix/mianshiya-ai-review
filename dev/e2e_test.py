@@ -1112,28 +1112,30 @@ async def main():
         await page.wait_for_timeout(400)
         await clear_conversation(page)
 
-        check("空状态提示有到期题", await page.locator("#msy-ai-host .msy-due").count() == 1)
-        due_text = await page.locator("#msy-ai-host .msy-due").inner_text()
-        check("到期数量显示正确", "1" in due_text, due_text)
+        # 复习排期已经挪到后台，面板上不该再出现这些
+        check("面板上不再显示到期提示", await page.locator("#msy-ai-host .msy-due").count() == 0)
         badge = await page.evaluate(
             """() => {
                 const c = document.getElementById('msy-ai-host').shadowRoot.querySelector('.msy-fab-count');
                 return { hidden: c.hidden, text: c.textContent };
             }"""
         )
-        check("悬浮球上有到期角标", not badge["hidden"] and badge["text"] == "1", str(badge))
-        check("有「开始复习」按钮", await page.locator("#msy-ai-host .msy-review .msy-review-go").count() == 1)
+        check("悬浮球上也不再挂角标", badge["hidden"] is True, str(badge))
+        check("面板上不再有「开始复习」按钮", await page.locator("#msy-ai-host .msy-review-go").count() == 0)
         # 空状态里的 ghost 按钮现在有两个（随机来一道 + 学习报告）
         check("有「随机来一道」按钮", await page.locator("#msy-ai-host .msy-ghost").count() >= 1,
               f"{await page.locator('#msy-ai-host .msy-ghost').count()} 个")
 
-        # 点开始复习：本来就会跳到那道题，同一页时直接进入复习模式
-        await page.locator("#msy-ai-host .msy-review .msy-review-go").click()
-        await page.wait_for_timeout(1800)
-        pressed = await page.locator('#msy-ai-host .msy-mode[data-mode="quiz"]').get_attribute("aria-pressed")
-        check("点复习后切到了自测模式（这题忘过）", pressed == "true", str(pressed))
-        check("复习时把历史对话带回来了",
-              await page.locator("#msy-ai-host .msy-row.assistant").count() >= 1)
+        # 复习入口现在在后台：待复习清单 + 开始复习按钮
+        await opt.locator('#tabs button[data-tab="report"]').click()
+        await opt.wait_for_timeout(600)
+        await opt.locator('#tabs button[data-tab="notes"]').click()
+        await opt.wait_for_timeout(1100)
+        check("后台有待复习清单", await opt.locator("#dueList .nitem").count() >= 1,
+              f"{await opt.locator('#dueList .nitem').count()} 条")
+        due_title = await opt.locator("#dueList .nitem .nt").first.inner_text()
+        check("清单里列出了具体题目", len(due_title) > 4, due_title)
+        check("后台有「开始复习」按钮", await opt.locator("#btnStartReview").count() == 1)
 
         # 设置页的复习统计
         await opt.locator('#tabs button[data-tab="notes"]').click()

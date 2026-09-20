@@ -1249,11 +1249,12 @@
         }
       },
 
-      /** 悬浮球上显示到期数量。关着面板的时候也能提醒你该复习了。 */
-      setDueCount(n) {
-        fabCount.textContent = n > 99 ? '99+' : String(n);
-        fabCount.hidden = !n;
-        fab.title = n ? `AI 复习助手（${n} 道该复习了）` : 'AI 复习助手（Alt+Shift+M）';
+      /**
+       * 到期数量保留成接口但不再显示 —— 复习排期挪到设置页了，
+       * 页面上只留一个干净的面板。
+       */
+      setDueCount() {
+        fabCount.hidden = true;
       },
 
       setProfile(name, configured) {
@@ -1312,9 +1313,6 @@
           if (p.total) bits.push(`共攒下 ${p.total} 道`);
           box.append(NS.h('div', { class: 'msy-progress', text: bits.join(' · ') }));
         }
-        if (info?.review?.due > 0) {
-          box.append(NS.h('div', { class: 'msy-due', text: `有 ${info.review.due} 道题到了该复习的时间` }));
-        }
 
         box.append(NS.h('div', { class: 'msy-empty-desc', html: desc }));
 
@@ -1336,20 +1334,12 @@
           box.append(row);
         }
 
-        // 复习入口：有到期的就排在最前面，攒着的题才有机会被翻出来
+        // 只留「随机来一道」和「学习报告」。
+        // 复习排期（多少道到期、开始复习）挪到设置页去了 ——
+        // 页面上是刷题的地方，攒了多少该复习的属于统计，不该在这儿占地方。
         const rv = info?.review;
-        if (rv && (rv.due > 0 || rv.total > 0)) {
+        if (rv && rv.total > 0) {
           const row = NS.h('div', { class: 'msy-review' });
-          if (rv.due > 0) {
-            row.append(
-              NS.h('button', {
-                class: 'msy-start msy-review-go',
-                type: 'button',
-                title: '按间隔重复挑出最该复习的那道，跳过去继续',
-                onclick: () => emit('review'),
-              }, [icon('refresh'), NS.h('span', { text: `开始复习（${rv.due} 道到期）` })])
-            );
-          }
           row.append(
             NS.h('button', {
               class: 'msy-ghost',

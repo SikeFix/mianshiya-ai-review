@@ -363,8 +363,10 @@
             </p>
             <div class="srs-stats" id="srsStats"></div>
             <div class="btn-row" style="margin-top:14px">
-              <button class="btn primary" id="btnExportDue" type="button">导出待复习清单</button>
+              <button class="btn primary" id="btnStartReview" type="button">开始复习</button>
+              <button class="btn" id="btnExportDue" type="button">导出待复习清单</button>
             </div>
+            <div class="notes-list" id="dueList" style="margin-top:12px"></div>
             <div class="note info">
               间隔是乘法递增的：评为「记住了」会按难度因子拉长（1 天 → 2.5 天 → 6 天……），
               评为「完全不会」会把间隔清零、10 分钟后再来，并降低这道题的难度因子，

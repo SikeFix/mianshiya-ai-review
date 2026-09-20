@@ -702,6 +702,57 @@
     return box;
   }
 
+  /** 待复习清单：哪几道该复习了，点一下直接打开原题 */
+  async function renderDueList() {
+    const box = $('dueList');
+    if (!box) return;
+    box.innerHTML = '';
+
+    const list = await MSY.notes.list();
+    const dueList = MSY.srs
+      .due(list)
+      .filter((r) => r.url)
+      .sort((a, b) => (a.srs?.due || 0) - (b.srs?.due || 0));
+
+    if (!dueList.length) {
+      box.append(
+        NS_h('div', { class: 'nempty', text: '现在没有到期的题。想加练的话，去题目页和 AI 聊几句就行。' })
+      );
+      return;
+    }
+
+    for (const rec of dueList.slice(0, 12)) {
+      const state = rec.srs?.lastRating ? MSY.srs.ratingById(rec.srs.lastRating) : null;
+      const item = NS_h('div', { class: 'nitem' });
+      item.style.cursor = 'pointer';
+      const body = NS_h('div', { class: 'nbody' });
+      body.append(
+        NS_h('div', {
+          class: 'nt',
+          text: rec.num ? `${rec.num}. ${rec.title || '未命名题目'}` : rec.title || '未命名题目',
+        })
+      );
+      const meta = NS_h('div', { class: 'nmeta' });
+      meta.append(
+        NS_h('span', {
+          class: 'rpt-pill',
+          text: state ? state.label : '未自评',
+          style: `background:${MSY.report.STATE_COLOR[rec.srs?.lastRating || 'new']}1f;color:${MSY.report.STATE_COLOR[rec.srs?.lastRating || 'new']}`,
+        })
+      );
+      meta.append(NS_h('span', { text: MSY.srs.dueLabel(rec.srs) }));
+      if (rec.srs?.lapses) meta.append(NS_h('span', { text: `忘过 ${rec.srs.lapses} 次` }));
+      if (rec.bank?.name) meta.append(NS_h('span', { text: rec.bank.name }));
+      body.append(meta);
+      item.append(body);
+      item.addEventListener('click', () => chrome.tabs.create({ url: rec.url }));
+      box.append(item);
+    }
+    if (dueList.length > 12) {
+      box.append(NS_h('div', { class: 'nmore', text: `…… 还有 ${dueList.length - 12} 道` }));
+    }
+  }
+
   async function renderNotesList() {
     const list = await filteredNotes();
     const all = await MSY.notes.list();
@@ -710,6 +761,7 @@
     $('notesFiltered').textContent =
       list.length === all.length ? '' : `筛出 ${list.length} 道`;
     await renderSrsStats(all);
+    await renderDueList();
 
     const box = $('notesList');
     box.innerHTML = '';
@@ -856,6 +908,21 @@
     } finally {
       btn.disabled = false;
     }
+  });
+
+  $('btnStartReview').addEventListener('click', async () => {
+    const list = await MSY.notes.list();
+    const dueList = MSY.srs
+      .due(list)
+      .filter((r) => r.url)
+      .sort((a, b) => (a.srs?.due || 0) - (b.srs?.due || 0));
+    if (!dueList.length) {
+      toast('现在没有到期的题', 'ok');
+      return;
+    }
+    // 打开最该复习的那道，剩下的回面板里按间隔继续
+    chrome.tabs.create({ url: dueList[0].url });
+    toast(`已打开：${dueList[0].title || '第一道待复习的题'}`, 'ok');
   });
 
   $('btnExportDue').addEventListener('click', async () => {
