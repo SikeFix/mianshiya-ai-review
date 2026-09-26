@@ -967,6 +967,8 @@
           if (!state.mounted) return;
           state.ui.setCollapsed(!state.ui.isCollapsed());
           NS.store.set({ ui: { collapsed: state.ui.isCollapsed() } });
+        } else if (msg?.type === 'app.random') {
+          randomQuestion();
         } else if (msg?.type === 'mic.toggle') {
           toggleMic();
         } else if (msg?.type === 'panel.expand') {

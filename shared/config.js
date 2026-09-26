@@ -124,13 +124,16 @@ MSY.PROVIDER_PRESETS = [
     id: 'ssnh',
     label: 'SSNH 中转（Qwen3-27B）',
     baseUrl: 'https://www.ssnh.top/v1',
-    model: 'qwen3.8-27B',
-    models: ['qwen3.8-27B'],
+    // 注意大小写：这个中转站对模型名是大小写敏感的，
+    // 写成 qwen3.8-27B 会返回 404 model_not_found
+    model: 'qwen3.8-27b',
+    models: ['qwen3.8-27b'],
     keyUrl: '',
     note:
       '你自己配的中转站。这个模型默认会先「想」一大段再回答，既慢又费 token，' +
       '所以预设里已经帮你关掉思考链（chat_template_kwargs.enable_thinking=false）。' +
-      '想让它深度思考，就把下面「自定义请求参数」清空。',
+      '想让它深度思考，就把下面「自定义请求参数」清空。\n' +
+      '注意模型名大小写敏感，要用小写的 qwen3.8-27b。',
     extraBody: { chat_template_kwargs: { enable_thinking: false } },
   },
   {

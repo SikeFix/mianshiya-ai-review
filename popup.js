@@ -114,6 +114,22 @@
     }
   });
 
+  $('btnReport').addEventListener('click', () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('options.html#report') });
+    window.close();
+  });
+
+  $('btnRandom').addEventListener('click', async () => {
+    if (!tab?.id) return;
+    // 让面板去挑：它知道当前页面上有哪些别的题
+    try {
+      await chrome.tabs.sendMessage(tab.id, { type: 'app.random' });
+      window.close();
+    } catch {
+      setState('页面还没加载完，刷新一下再试');
+    }
+  });
+
   $('btnOptions').addEventListener('click', () => {
     chrome.runtime.openOptionsPage();
     window.close();

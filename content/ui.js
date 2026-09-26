@@ -554,12 +554,6 @@
 }
 .msy-ghost .msy-i { width: 15px; height: 15px; }
 .msy-ghost:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
-.msy-due {
-  display: block; margin: 10px auto 0; width: fit-content;
-  padding: 3px 11px; border-radius: 999px;
-  background: var(--danger-soft); color: var(--danger);
-  font-size: 11.5px; font-weight: 600;
-}
 
 /* 消息操作条 */
 .msy-actions {
@@ -623,12 +617,6 @@
 }
 .msy-empty .msy-empty-desc {
   font-size: 12px; line-height: 1.75; color: var(--text-dim);
-}
-.msy-empty .msy-progress {
-  display: inline-block; margin: 2px 0 8px;
-  padding: 3px 11px; border-radius: 999px;
-  background: var(--primary-soft); color: var(--primary);
-  font-size: 11.5px; font-weight: 600;
 }
 .msy-personas {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
@@ -1302,21 +1290,11 @@
         const box = NS.h('div', { class: 'msy-empty' }, [
           NS.h('div', { class: 'msy-empty-icon' }, [icon(mode.icon)]),
           NS.h('div', { class: 'msy-empty-title', text: info?.title || '准备就绪' }),
+          NS.h('div', { class: 'msy-empty-desc', html: desc }),
         ]);
 
-        // 复习进度：攒东西的感觉本身就有激励作用
-        const p = info?.progress;
-        if (p && (p.total || p.today)) {
-          const bits = [];
-          if (p.today) bits.push(`今天 ${p.today} 道`);
-          if (p.streak > 1) bits.push(`连续 ${p.streak} 天`);
-          if (p.total) bits.push(`共攒下 ${p.total} 道`);
-          box.append(NS.h('div', { class: 'msy-progress', text: bits.join(' · ') }));
-        }
-
-        box.append(NS.h('div', { class: 'msy-empty-desc', html: desc }));
-
-        // 面试类模式下让人挑个面试官 —— 换个语气，复习体感完全不一样
+        // 面试类模式下让人挑个面试官 —— 换个语气，复习体感完全不一样。
+        // 这个是「选怎么问」，不是统计，所以留在面板上。
         if (mode.id === 'interview' || mode.id === 'followup') {
           const row = NS.h('div', { class: 'msy-personas' });
           row.append(NS.h('span', { class: 'msy-personas-label', text: '面试官' }));
@@ -1334,31 +1312,8 @@
           box.append(row);
         }
 
-        // 只留「随机来一道」和「学习报告」。
-        // 复习排期（多少道到期、开始复习）挪到设置页去了 ——
-        // 页面上是刷题的地方，攒了多少该复习的属于统计，不该在这儿占地方。
-        const rv = info?.review;
-        if (rv && rv.total > 0) {
-          const row = NS.h('div', { class: 'msy-review' });
-          row.append(
-            NS.h('button', {
-              class: 'msy-ghost',
-              type: 'button',
-              title: '从当前页面的题目里随机抽一道',
-              onclick: () => emit('random'),
-            }, [icon('quiz'), NS.h('span', { text: '随机来一道' })])
-          );
-          row.append(
-            NS.h('button', {
-              class: 'msy-ghost',
-              type: 'button',
-              title: '看看哪块知识薄弱、哪些题还没掌握',
-              onclick: () => emit('report'),
-            }, [icon('explain'), NS.h('span', { text: '学习报告' })])
-          );
-          box.append(row);
-        }
-
+        // 统计性质的（进度、到期、复习入口）都挪到设置页去了，
+        // 页面上是刷题的地方，越干净越好，所以这里只剩一个开始按钮。
         box.append(
           NS.h('button', {
             class: 'msy-start',

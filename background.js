@@ -30,15 +30,25 @@ function friendlyError(err) {
   const status = err.status;
   const raw = String(err.message || '');
   const body = String(err.body || '').slice(0, 400);
+  const providerMsg = providerMessage(body);
 
   if (status === 401 || status === 403) {
-    return `API Key 被拒绝了（HTTP ${status}）。请到设置页检查 Key 是否填对、是否已过期或欠费。`;
+    return (
+      `API Key 被拒绝了（HTTP ${status}）。请到设置页检查 Key 是否填对、是否已过期或欠费。` +
+      (providerMsg ? `\n服务商说：${providerMsg}` : '')
+    );
   }
-  if (status === 402) return '账户余额不足，请先充值。';
+  if (status === 402) return `账户余额不足，请先充值。${providerMsg ? `\n服务商说：${providerMsg}` : ''}`;
   if (status === 404) {
-    return '接口地址（Base URL）不对，返回了 404。检查一下是不是少了或多了 /v1，例如 https://api.deepseek.com/v1';
+    // 404 不一定是我把地址填错了 —— 很多中转站对「模型不可用」也返回 404，
+    // 而真正的原因就在响应体里。先把它带出来，比我自己猜有用得多。
+    return providerMsg
+      ? `接口返回了 404。服务商说：${providerMsg}\n（如果不是模型名的问题，再检查 Base URL 是否少了或多了 /v1）`
+      : '接口返回了 404。检查一下 Base URL 是不是少了或多了 /v1，例如 https://api.deepseek.com/v1';
   }
-  if (status === 429) return '请求太频繁或额度已用完（HTTP 429），等一会儿再试。';
+  if (status === 429) {
+    return `请求太频繁或额度已用完（HTTP 429），等一会儿再试。${providerMsg ? `\n服务商说：${providerMsg}` : ''}`;
+  }
   if (status >= 500) return `服务端出错了（HTTP ${status}），通常等一会儿重试就好。${body ? '\n' + body : ''}`;
 
   if (/Failed to fetch|NetworkError|Load failed|ERR_/i.test(raw)) {
@@ -50,7 +60,21 @@ function friendlyError(err) {
     );
   }
   if (/AbortError/.test(raw)) return '已中断。';
-  return raw || '请求失败';
+  return [raw || '请求失败', providerMsg && `服务商说：${providerMsg}`].filter(Boolean).join('\n');
+}
+
+/** 从响应体里挖出服务商自己给的错误原因 */
+function providerMessage(body) {
+  if (!body) return '';
+  try {
+    const j = JSON.parse(body);
+    const m = j?.error?.message || j?.error || j?.message || j?.msg;
+    if (typeof m === 'string' && m.trim()) return m.trim().slice(0, 300);
+  } catch {
+    /* 不是 JSON 就看看纯文本 */
+  }
+  const t = String(body).trim();
+  return t && t.length < 300 && !t.startsWith('<') ? t : '';
 }
 
 async function readError(res) {

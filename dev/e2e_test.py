@@ -660,6 +660,10 @@ async def main():
         await page.wait_for_selector("#msy-ai-host .msy-bubble.error", timeout=20000)
         err_text = await page.locator("#msy-ai-host .msy-bubble.error").last.inner_text()
         check("401 翻译成了人话", "API Key" in err_text, err_text[:90].replace("\n", " "))
+        # 服务商返回的原始原因要带出来 —— 以前只看状态码，会把「模型不可用」
+        # 这种 404 误报成「地址填错了」
+        check("错误里带上了服务商的原话", "Invalid API key" in err_text,
+              err_text[:140].replace("\n", " "))
         check("错误消息带重试按钮", await page.locator("#msy-ai-host .msy-bubble.error .msy-actions button").count() >= 1)
 
         await sw.evaluate(
@@ -779,7 +783,7 @@ async def main():
         await opt.wait_for_timeout(300)
         check("选中 SSNH 预设会填入地址", "ssnh.top" in await opt.locator("#pBaseUrl").input_value(),
               await opt.locator("#pBaseUrl").input_value())
-        check("选中 SSNH 预设会填入模型", "qwen3.8-27B" in await opt.locator("#pModel").input_value(),
+        check("选中 SSNH 预设会填入模型（小写）", "qwen3.8-27b" in await opt.locator("#pModel").input_value(),
               await opt.locator("#pModel").input_value())
         check("预设带上了关闭思考链的参数",
               "enable_thinking" in await opt.locator("#pExtra").input_value(),
@@ -873,7 +877,7 @@ async def main():
               "参考答案" in (await page.locator("#msy-ai-host .msy-q-meta").inner_text()))
         await page.locator('#msy-ai-host .msy-mode[data-mode="memorize"]').click()
         await page.wait_for_timeout(300)
-        check("空状态显示复习进度", await page.locator("#msy-ai-host .msy-progress").count() >= 1)
+        check("空状态不再显示统计信息", await page.locator("#msy-ai-host .msy-progress").count() == 0)
         label = (await page.locator(START_BTN).inner_text()).strip()
         check("空状态按钮跟着模式走", label == "开始速记", label)
         check("模式提示也换了", "速记" in (await page.locator("#msy-ai-host .msy-input").get_attribute("placeholder") or ""))
@@ -1122,10 +1126,10 @@ async def main():
         )
         check("悬浮球上也不再挂角标", badge["hidden"] is True, str(badge))
         check("面板上不再有「开始复习」按钮", await page.locator("#msy-ai-host .msy-review-go").count() == 0)
-        # 空状态里的 ghost 按钮现在有两个（随机来一道 + 学习报告）
-        check("有「随机来一道」按钮", await page.locator("#msy-ai-host .msy-ghost").count() >= 1,
-              f"{await page.locator('#msy-ai-host .msy-ghost').count()} 个")
-
+        # 面板上不该再有复习/统计相关的东西，空状态只留一个开始按钮
+        check("面板上没有复习相关按钮", await page.locator("#msy-ai-host .msy-review-go").count() == 0)
+        check("面板上没有进度和到期提示",
+              await page.locator("#msy-ai-host .msy-progress, #msy-ai-host .msy-due").count() == 0)
         # 复习入口现在在后台：待复习清单 + 开始复习按钮
         await opt.locator('#tabs button[data-tab="report"]').click()
         await opt.wait_for_timeout(600)
@@ -1237,29 +1241,32 @@ async def main():
                 print(f"     分类导出：{d.name}/{files[0].name}")
         await opt.locator("#exportDim").select_option("")
 
-        # 面板上的「学习报告」入口
+        # 面板空态应该只剩：图标 + 题目 + 说明 + 开始按钮
         await page.locator('#msy-ai-host .msy-mode[data-mode="memorize"]').click()
         await page.wait_for_timeout(400)
         await clear_conversation(page)
-        ghosts = await page.locator("#msy-ai-host .msy-ghost").all_inner_texts()
-        if not (any("随机" in g for g in ghosts) and any("学习报告" in g for g in ghosts)):
-            dump = await page.evaluate(
-                """() => {
-                    const sr = document.getElementById('msy-ai-host').shadowRoot;
-                    return {
-                        empty: sr.querySelectorAll('.msy-empty').length,
-                        review: sr.querySelectorAll('.msy-review').length,
-                        rows: sr.querySelectorAll('.msy-row').length,
-                        start: sr.querySelectorAll('.msy-start').length,
-                        text: (sr.querySelector('.msy-msgs').textContent || '').slice(0, 160),
-                    };
-                }"""
-            )
-        else:
-            dump = ""
-        check("面板空状态有「随机来一道」和「学习报告」",
-              any("随机" in g for g in ghosts) and any("学习报告" in g for g in ghosts),
-              f"{ghosts} | 现场={dump}")
+        shape = await page.evaluate(
+            """() => {
+                const sr = document.getElementById('msy-ai-host').shadowRoot;
+                return {
+                    icon: sr.querySelectorAll('.msy-empty-icon').length,
+                    title: sr.querySelectorAll('.msy-empty-title').length,
+                    desc: sr.querySelectorAll('.msy-empty-desc').length,
+                    start: sr.querySelectorAll('.msy-start').length,
+                    extra: sr.querySelectorAll('.msy-empty .msy-ghost, .msy-empty .msy-progress, .msy-empty .msy-review').length,
+                };
+            }"""
+        )
+        check("空状态结构完整（图标+题目+说明+开始）",
+              shape["icon"] == 1 and shape["title"] == 1 and shape["desc"] == 1 and shape["start"] == 1,
+              str(shape))
+        check("空状态里没有多余的按钮或统计", shape["extra"] == 0, str(shape))
+
+        # 随机一题和学习报告挪到了工具栏弹窗
+        await pop.goto(f"chrome-extension://{ext_id}/popup.html", wait_until="domcontentloaded")
+        await pop.wait_for_timeout(400)
+        check("popup 里有「随机来一道」", await pop.locator("#btnRandom").count() == 1)
+        check("popup 里有「学习报告」", await pop.locator("#btnReport").count() == 1)
 
         # ================= 21. 真实站点冒烟 =================
         stage("21. 真实站点冒烟测试（2 秒内完成，避开反调试）")
