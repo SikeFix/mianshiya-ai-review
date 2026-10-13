@@ -47,7 +47,7 @@
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .07);
   --shadow-lg: 0 18px 50px rgba(15, 23, 42, .18), 0 2px 8px rgba(15, 23, 42, .08);
   --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgba(var(--primary-rgb), .55);
-  --radius: 14px;
+  --radius: 18px;
 
   position: fixed;
   z-index: ${Z};
@@ -98,44 +98,55 @@
 /* ---------------- 悬浮球 ---------------- */
 .msy-fab {
   position: fixed;
-  width: 52px; height: 52px;
-  border-radius: 50%;
+  width: 54px; height: 54px;
+  border-radius: 18px;
   border: none;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: linear-gradient(140deg, var(--primary) 0%, var(--accent) 100%);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(var(--primary-rgb), .42), 0 2px 6px rgba(16, 24, 40, .12);
+  box-shadow: 0 10px 28px rgba(var(--primary-rgb), .42), 0 2px 6px rgba(15, 23, 42, .14),
+              inset 0 1px 0 rgba(255, 255, 255, .25);
   display: flex; align-items: center; justify-content: center;
-  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, border-radius .22s ease;
   touch-action: none;
   user-select: none;
   padding: 0;
 }
-.msy-fab .msy-i { width: 22px; height: 22px; }
-.msy-fab:hover { transform: scale(1.07); box-shadow: 0 10px 30px rgba(var(--primary-rgb), .55); }
+.msy-fab .msy-i { width: 24px; height: 24px; }
+.msy-fab:hover {
+  transform: translateY(-2px) scale(1.04); border-radius: 20px;
+  box-shadow: 0 14px 34px rgba(var(--primary-rgb), .52), 0 2px 6px rgba(15, 23, 42, .14),
+              inset 0 1px 0 rgba(255, 255, 255, .25);
+}
 .msy-fab:active { transform: scale(.95); }
+/* 悬停时在左边冒出一个小标签，第一次用的人知道这是什么 */
+.msy-fab::before {
+  content: "AI 复习助手"; position: absolute; right: calc(100% + 10px); top: 50%;
+  transform: translate(6px, -50%); opacity: 0; pointer-events: none;
+  padding: 5px 10px; border-radius: 8px; white-space: nowrap;
+  background: var(--text); color: var(--bg);
+  font-size: 12px; font-weight: 500; line-height: 1.4;
+  box-shadow: var(--shadow-sm);
+  transition: opacity .16s, transform .16s;
+}
+.msy-fab:hover::before { opacity: 1; transform: translate(0, -50%); }
 .msy-fab .msy-fab-count {
-  position: absolute; top: -4px; right: -4px;
+  position: absolute; top: -5px; right: -5px;
   min-width: 19px; height: 19px; padding: 0 5px;
-  border-radius: 999px; border: 2px solid #fff;
+  border-radius: 999px; border: 2px solid var(--bg);
   background: var(--danger); color: #fff;
   font-size: 10.5px; font-weight: 700; line-height: 15px;
   text-align: center; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 .msy-fab .msy-fab-count[hidden] { display: none; }
-.msy-fab .msy-fab-dot {
-  position: absolute; top: 3px; right: 3px;
-  width: 11px; height: 11px; border-radius: 50%;
-  background: var(--warn); border: 2px solid #fff;
-}
 .msy-fab[data-busy="1"]::after {
   content: ""; position: absolute; inset: -5px;
-  border-radius: 50%; border: 2px solid rgba(var(--primary-rgb), .5);
+  border-radius: 22px; border: 2px solid rgba(var(--primary-rgb), .5);
   animation: msy-pulse 1.5s ease-out infinite;
 }
 @keyframes msy-pulse {
-  0% { transform: scale(.88); opacity: .85; }
-  100% { transform: scale(1.4); opacity: 0; }
+  0% { transform: scale(.9); opacity: .85; }
+  100% { transform: scale(1.32); opacity: 0; }
 }
 
 /* ---------------- 面板外壳 ---------------- */
@@ -147,99 +158,115 @@
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+  animation: msy-open .22s cubic-bezier(.2, .9, .3, 1.1);
+  transform-origin: bottom right;
 }
+@keyframes msy-open { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
 .msy-panel[hidden], .msy-fab[hidden] { display: none !important; }
 
 /* 语音对话模式：面板描一圈，提醒你麦克风是开着的 */
 .msy-panel[data-voice="1"] {
   box-shadow: var(--shadow-lg), 0 0 0 2px rgba(var(--danger-rgb), .55);
 }
-.msy-panel[data-voice="1"] .msy-brand::after {
-  content: "语音对话中"; margin-left: 6px;
-  font-size: 10.5px; font-weight: 500; opacity: .92;
-  padding: 1px 6px; border-radius: 999px;
-  background: rgba(255, 255, 255, .22);
+.msy-panel[data-voice="1"] .msy-brand-text::after {
+  content: "● 语音对话中"; margin-left: 7px;
+  font-size: 10.5px; font-weight: 600;
+  padding: 1px 7px; border-radius: 999px;
+  color: var(--danger); background: var(--danger-soft);
+  animation: msy-breathe 1.6s ease-in-out infinite;
 }
+@keyframes msy-breathe { 50% { opacity: .55; } }
 
 .msy-resize {
   position: absolute; top: 0; left: 0;
   width: 18px; height: 18px;
-  cursor: nwse-resize; z-index: 2;
+  cursor: nwse-resize; z-index: 3;
   background: linear-gradient(135deg, var(--border-strong) 0 46%, transparent 46%);
   border-top-left-radius: var(--radius);
   opacity: 0; transition: opacity .15s;
 }
 .msy-panel:hover .msy-resize { opacity: .9; }
 
-/* ---------------- 顶栏 ---------------- */
+/* ---------------- 顶栏 ----------------
+   以前是一整条渐变色带，压得很重，和站点也抢眼。改成跟面板同色的干净顶栏，
+   品牌感只留给左边的渐变 logo 方块和顶部一条 2px 的彩带。 */
 .msy-head {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 10px 10px 12px;
-  background: linear-gradient(135deg, #4f46e5 0%, #6152ea 55%, #7c5cf0 100%);
-  color: #fff;
+  display: flex; align-items: center; gap: 6px;
+  padding: 12px 10px 10px 14px;
+  background: var(--bg);
+  color: var(--text);
   cursor: move;
   user-select: none;
   flex: none;
   position: relative;
 }
-.msy-root[data-theme="dark"] .msy-head {
-  background: linear-gradient(135deg, #3f39c4 0%, #4f43cf 55%, #6447d6 100%);
-}
-.msy-head::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,.14), transparent 60%);
-  pointer-events: none;
+.msy-head::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), #ec6fb4);
 }
 .msy-brand {
-  display: flex; align-items: center; gap: 7px;
-  font-weight: 600; font-size: 13px; letter-spacing: .2px;
+  display: flex; align-items: center; gap: 9px; min-width: 0;
   white-space: nowrap;
 }
-.msy-brand .msy-i { width: 16px; height: 16px; }
+.msy-logo {
+  width: 28px; height: 28px; border-radius: 9px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, var(--primary), var(--accent));
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .35), inset 0 1px 0 rgba(255, 255, 255, .25);
+}
+.msy-logo .msy-i { width: 16px; height: 16px; }
+.msy-brand-text { display: flex; align-items: center; font-weight: 700; font-size: 14px; letter-spacing: .2px; }
 .msy-head .msy-spacer { flex: 1; }
 
 .msy-profile {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11.5px; padding: 3px 9px 3px 7px; border-radius: 999px;
-  background: rgba(255,255,255,.2);
-  border: 1px solid rgba(255,255,255,.22);
-  white-space: nowrap; max-width: 132px;
-  cursor: pointer; transition: background .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; font-weight: 500; padding: 4px 10px 4px 8px; border-radius: 999px;
+  background: var(--bg-soft); color: var(--text-dim);
+  border: 1px solid var(--border);
+  white-space: nowrap; max-width: 140px;
+  cursor: pointer; transition: background .15s, border-color .15s, color .15s;
   position: relative; z-index: 1;
 }
-.msy-profile:hover { background: rgba(255,255,255,.32); }
-.msy-profile .msy-dot { width: 6px; height: 6px; border-radius: 50%; background: #6ee7b7; flex: none; }
-.msy-profile[data-ok="0"] .msy-dot { background: #fcd34d; }
+.msy-profile:hover { background: var(--bg-hover); border-color: var(--border-strong); color: var(--text); }
+.msy-profile .msy-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--ok); flex: none;
+  box-shadow: 0 0 0 3px var(--ok-soft);
+}
+.msy-profile[data-ok="0"] .msy-dot { background: var(--warn); box-shadow: 0 0 0 3px var(--warn-soft); }
 .msy-profile .msy-pname { overflow: hidden; text-overflow: ellipsis; }
 
 .msy-icon-btn {
-  width: 26px; height: 26px; flex: none;
+  width: 28px; height: 28px; flex: none;
   border: none; border-radius: 8px;
-  background: transparent; color: rgba(255,255,255,.86);
+  background: transparent; color: var(--text-faint);
   cursor: pointer; padding: 0;
   display: flex; align-items: center; justify-content: center;
   transition: background .15s, color .15s;
   position: relative; z-index: 1;
 }
-.msy-icon-btn:hover { background: rgba(255,255,255,.22); color: #fff; }
+.msy-icon-btn:hover { background: var(--bg-hover); color: var(--text); }
 
-/* ---------------- 模式条 ---------------- */
-.msy-modes-wrap { position: relative; flex: none; }
+/* ---------------- 模式条 ----------------
+   分段控件：一条凹槽里放所有模式，选中的那个浮起来。比一排独立描边按钮安静得多。 */
+.msy-modes-wrap { position: relative; flex: none; margin: 0 10px 8px; }
 /* 模式按钮放不下时横向滚动；两侧的渐隐提示「那边还有」，
    否则「自测」「自由对话」藏在右边根本没人发现 */
 .msy-modes-wrap::before, .msy-modes-wrap::after {
-  content: ""; position: absolute; top: 0; bottom: 0; width: 28px;
+  content: ""; position: absolute; top: 1px; bottom: 1px; width: 30px;
   pointer-events: none; opacity: 0; transition: opacity .18s; z-index: 1;
 }
-.msy-modes-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
-.msy-modes-wrap::after { right: 0; background: linear-gradient(270deg, var(--bg), transparent); }
+.msy-modes-wrap::before { left: 1px; border-radius: 11px 0 0 11px; background: linear-gradient(90deg, var(--bg-sunken) 30%, transparent); }
+.msy-modes-wrap::after { right: 1px; border-radius: 0 11px 11px 0; background: linear-gradient(270deg, var(--bg-sunken) 30%, transparent); }
 .msy-modes-wrap[data-more-left="1"]::before,
 .msy-modes-wrap[data-more-right="1"]::after { opacity: 1; }
 .msy-modes {
-  display: flex; gap: 5px;
-  padding: 9px 10px 8px;
+  display: flex; gap: 2px;
+  padding: 3px;
   overflow-x: auto; flex: none;
-  background: var(--bg);
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   scrollbar-width: none;
   scroll-behavior: smooth;
 }
@@ -247,32 +274,33 @@
 .msy-mode {
   flex: none;
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   border-radius: 9px;
-  border: 1px solid var(--border);
-  background: var(--bg);
+  border: 1px solid transparent;
+  background: transparent;
   color: var(--text-dim);
-  font-size: 12.5px; font-family: inherit; line-height: 1;
+  font-size: 12.5px; font-weight: 500; font-family: inherit; line-height: 1;
   cursor: pointer; white-space: nowrap;
-  transition: background .14s, color .14s, border-color .14s;
+  transition: background .16s, color .16s, box-shadow .16s;
 }
-.msy-mode .msy-i { width: 14px; height: 14px; }
-.msy-mode:hover { background: var(--bg-hover); color: var(--text); }
+.msy-mode .msy-i { width: 14px; height: 14px; opacity: .85; }
+.msy-mode:hover { color: var(--text); background: rgba(var(--primary-rgb), .06); }
 .msy-mode[aria-pressed="true"] {
-  background: var(--primary); border-color: var(--primary);
-  color: var(--primary-fg); font-weight: 600;
-  box-shadow: 0 2px 8px rgba(var(--primary-rgb), .28);
+  background: var(--bg); border-color: var(--border);
+  color: var(--primary); font-weight: 600;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .08), 0 2px 8px rgba(var(--primary-rgb), .14);
 }
+.msy-mode[aria-pressed="true"] .msy-i { opacity: 1; }
 
 /* ---------------- 题目条 ---------------- */
 .msy-scope {
   flex: none; display: flex; align-items: center; gap: 7px;
-  margin: 0 10px 8px; padding: 6px 10px; border-radius: 9px;
-  background: var(--primary-soft); border: 1px solid var(--primary);
+  margin: 0 10px 8px; padding: 6px 10px; border-radius: 10px;
+  background: var(--primary-soft); border: 1px dashed rgba(var(--primary-rgb), .5);
   font-size: 11.5px; color: var(--primary);
 }
 .msy-scope[hidden] { display: none !important; }
-.msy-scope-label { font-weight: 600; flex: none; }
+.msy-scope-label { font-weight: 700; flex: none; }
 .msy-scope-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .msy-scope-clear {
   flex: none; border: none; background: transparent; color: var(--primary);
@@ -282,46 +310,59 @@
 
 .msy-qbar {
   flex: none;
-  margin: 0 10px 9px;
-  padding: 9px 10px;
-  border-radius: 10px;
+  margin: 0 10px 10px;
+  padding: 10px 11px 10px 13px;
+  border-radius: 12px;
   background: var(--bg-soft);
   border: 1px solid var(--border);
   font-size: 12px;
+  position: relative; overflow: hidden;
+}
+/* 左边一条主色竖线，一眼看出「这是当前题目」 */
+.msy-qbar::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
 }
 .msy-qbar .msy-q-top { display: flex; align-items: flex-start; gap: 6px; }
 .msy-qbar .msy-q-name {
-  flex: 1; font-weight: 600; font-size: 12.5px; color: var(--text);
+  flex: 1; font-weight: 650; font-size: 13px; color: var(--text);
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden; word-break: break-word; line-height: 1.5;
 }
 .msy-qbar .msy-q-refresh {
   flex: none; border: none; background: transparent; color: var(--text-faint);
-  cursor: pointer; padding: 1px; border-radius: 6px; line-height: 0;
+  cursor: pointer; padding: 3px; border-radius: 7px; line-height: 0;
   transition: color .15s, background .15s, transform .3s;
 }
 .msy-qbar .msy-q-refresh:hover { color: var(--primary); background: var(--bg-hover); }
 .msy-qbar .msy-q-refresh:active { transform: rotate(-180deg); }
 .msy-qbar .msy-q-refresh .msy-i { width: 14px; height: 14px; }
 .msy-qbar .msy-q-meta {
-  margin-top: 5px; display: flex; flex-wrap: wrap; gap: 4px 10px;
+  margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 5px 6px;
   color: var(--text-dim); font-size: 11px;
 }
-.msy-qbar .msy-badge { display: inline-flex; align-items: center; gap: 3px; }
-.msy-qbar .msy-badge .msy-i { width: 12px; height: 12px; }
-.msy-qbar .msy-badge.ok, .msy-qbar .msy-badge.warn {
-  padding: 1px 7px 1px 5px; border-radius: 999px; font-weight: 500;
+.msy-qbar .msy-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 1px 8px; border-radius: 999px;
+  background: var(--bg-hover); color: var(--text-dim);
 }
+.msy-qbar .msy-badge .msy-i { width: 12px; height: 12px; }
+.msy-qbar .msy-badge.ok, .msy-qbar .msy-badge.warn { padding-left: 6px; font-weight: 500; }
 .msy-qbar .msy-badge.ok { color: var(--ok); background: var(--ok-soft); }
 .msy-qbar .msy-badge.warn { color: var(--warn); background: var(--warn-soft); }
 
 /* ---------------- 消息区 ---------------- */
-.msy-body-wrap { flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column; }
+.msy-body-wrap {
+  flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column;
+  border-top: 1px solid var(--border);
+}
 .msy-msgs {
   flex: 1; min-height: 0;
   overflow-y: auto; overscroll-behavior: contain;
-  padding: 6px 12px 12px;
-  background: var(--bg-sunken);
+  padding: 14px 12px 14px;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(var(--primary-rgb), .07) 1px, transparent 0) 0 0 / 18px 18px,
+    var(--bg-sunken);
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 }
@@ -333,13 +374,22 @@
 }
 .msy-msgs::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
 
-.msy-row { display: flex; margin-bottom: 12px; animation: msy-in .22s ease-out; }
+.msy-row { display: flex; gap: 8px; margin-bottom: 14px; animation: msy-in .24s ease-out; }
 .msy-row.user { justify-content: flex-end; }
 .msy-row.sys { justify-content: center; }
 @keyframes msy-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+/* AI 头像：和 logo 同一个渐变方块，对话一眼分得清谁是谁 */
+.msy-avatar {
+  flex: none; width: 26px; height: 26px; margin-top: 2px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, var(--primary), var(--accent)); color: #fff;
+  box-shadow: 0 2px 6px rgba(var(--primary-rgb), .3);
+}
+.msy-avatar .msy-i { width: 14px; height: 14px; }
+
 .msy-bubble {
-  max-width: 90%;
+  max-width: 88%; min-width: 0;
   padding: 10px 13px;
   border-radius: 14px;
   word-break: break-word;
@@ -348,23 +398,27 @@
   box-shadow: var(--shadow-sm);
   line-height: 1.72;
 }
+.msy-row.assistant .msy-bubble { flex: 1; max-width: calc(100% - 34px); border-top-left-radius: 5px; }
 .msy-row.user .msy-bubble {
-  background: var(--primary); border-color: var(--primary);
+  background: linear-gradient(140deg, var(--primary), color-mix(in srgb, var(--primary) 70%, var(--accent)));
+  border-color: transparent;
   color: var(--primary-fg);
   border-bottom-right-radius: 5px;
   white-space: pre-wrap;
-  box-shadow: 0 2px 8px rgba(var(--primary-rgb), .22);
+  box-shadow: 0 4px 14px rgba(var(--primary-rgb), .26);
 }
-.msy-row.assistant .msy-bubble { border-bottom-left-radius: 5px; }
 .msy-row.sys .msy-bubble {
   background: transparent; border: none; box-shadow: none;
   color: var(--text-faint); font-size: 11.5px;
   max-width: 100%; text-align: center; padding: 2px 0;
+  display: flex; align-items: center; gap: 10px;
 }
-.msy-row.assistant:last-child .msy-bubble { margin-bottom: 0; }
+.msy-row.sys .msy-bubble::before, .msy-row.sys .msy-bubble::after {
+  content: ""; width: 28px; height: 1px; background: var(--border-strong);
+}
 
 .msy-bubble.error {
-  border-color: var(--danger); background: var(--danger-soft);
+  border-color: rgba(var(--danger-rgb), .45); background: var(--danger-soft);
   color: var(--text); box-shadow: none;
 }
 .msy-bubble.error .msy-err-title {
@@ -375,6 +429,9 @@
 .msy-bubble.error pre {
   white-space: pre-wrap; font-family: inherit; margin: 0; font-size: 12.5px;
   line-height: 1.65; color: var(--text-dim);
+}
+.msy-row.assistant:has(.msy-bubble.error) .msy-avatar {
+  background: var(--danger); box-shadow: none;
 }
 
 /* 消息内的 markdown */
@@ -530,49 +587,53 @@
 /* 快速作答 chips */
 .msy-quick {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
-  margin-top: 10px; padding-top: 9px; border-top: 1px dashed var(--border);
+  margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);
 }
 .msy-quick .msy-quick-hint {
-  font-size: 11px; color: var(--text-faint); margin-right: 1px;
+  font-size: 11px; color: var(--text-faint); margin-right: 1px; width: 100%;
 }
 .msy-chip {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 11px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-width: 38px; padding: 5px 12px; border-radius: 10px;
   border: 1px solid var(--border-strong);
   background: var(--bg); color: var(--text);
-  font-size: 12.5px; font-family: inherit; font-weight: 600;
-  cursor: pointer; transition: all .14s;
+  font-size: 12.5px; font-family: inherit; font-weight: 650;
+  cursor: pointer; transition: all .15s;
+  box-shadow: 0 1px 0 var(--border);
 }
 .msy-chip:hover {
   border-color: var(--primary); color: var(--primary);
   background: var(--primary-soft); transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .16);
 }
-.msy-chip:active { transform: translateY(0); }
-.msy-chip.weak { font-weight: 500; color: var(--text-dim); }
+.msy-chip:active { transform: translateY(0); box-shadow: none; }
+.msy-chip.weak { font-weight: 500; color: var(--text-dim); border-style: dashed; box-shadow: none; }
 .msy-chip .msy-i { width: 13px; height: 13px; }
 
-/* 自评：这道题掌握得怎么样 */
+/* 自评：这道题掌握得怎么样。四档各自带颜色，不用悬停也看得出轻重 */
 .msy-rate {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
-  margin-top: 9px; padding-top: 9px; border-top: 1px dashed var(--border);
+  margin-top: 10px; padding: 9px 10px; border-radius: 11px;
+  background: var(--bg-soft); border: 1px solid var(--border);
 }
-.msy-rate-label { font-size: 11px; color: var(--text-faint); margin-right: 2px; }
+.msy-rate-label { font-size: 11px; font-weight: 600; color: var(--text-dim); width: 100%; margin-bottom: 1px; }
 .msy-rate-btn {
+  --tone: var(--primary); --tone-soft: var(--primary-soft);
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px; border-radius: 8px;
-  border: 1px solid var(--border-strong); background: var(--bg);
-  color: var(--text-dim); font-size: 12px; font-family: inherit;
-  cursor: pointer; transition: all .14s;
+  padding: 4px 10px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, var(--border));
+  background: var(--bg);
+  color: var(--tone); font-size: 12px; font-weight: 500; font-family: inherit;
+  cursor: pointer; transition: all .15s;
 }
+.msy-rate-btn[data-tone="bad"] { --tone: var(--danger); --tone-soft: var(--danger-soft); }
+.msy-rate-btn[data-tone="warn"] { --tone: var(--warn); --tone-soft: var(--warn-soft); }
+.msy-rate-btn[data-tone="ok"] { --tone: var(--ok); --tone-soft: var(--ok-soft); }
 .msy-rate-btn .msy-i { width: 12px; height: 12px; }
-.msy-rate-btn:hover { transform: translateY(-1px); }
-.msy-rate-btn[data-tone="bad"]:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); }
-.msy-rate-btn[data-tone="warn"]:hover { border-color: var(--warn); color: var(--warn); }
-.msy-rate-btn[data-tone="ok"]:hover { border-color: var(--ok); color: var(--ok); }
-.msy-rate-btn[data-tone="flat"]:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+.msy-rate-btn:hover { transform: translateY(-1px); background: var(--tone-soft); border-color: var(--tone); }
 .msy-rate-done {
   display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11.5px; color: var(--ok); font-weight: 600;
+  font-size: 12px; color: var(--ok); font-weight: 600;
 }
 .msy-rate-done .msy-i { width: 13px; height: 13px; }
 
@@ -593,27 +654,28 @@
 
 /* 消息操作条 */
 .msy-actions {
-  display: flex; gap: 12px; margin-top: 7px;
+  display: flex; gap: 4px; margin: 8px -6px -4px;
   font-size: 11px; color: var(--text-faint);
   opacity: 0; transition: opacity .18s;
 }
+.msy-actions:empty { display: none; }
 .msy-row:hover .msy-actions, .msy-actions:focus-within { opacity: 1; }
 .msy-actions button {
   display: inline-flex; align-items: center; gap: 4px;
   border: none; background: transparent; color: var(--text-faint);
-  cursor: pointer; font-size: 11px; font-family: inherit; padding: 0;
-  transition: color .15s;
+  cursor: pointer; font-size: 11px; font-family: inherit; padding: 3px 7px; border-radius: 6px;
+  transition: color .15s, background .15s;
 }
 .msy-actions button .msy-i { width: 12px; height: 12px; }
-.msy-actions button:hover { color: var(--primary); }
+.msy-actions button:hover { color: var(--primary); background: var(--primary-soft); }
 
 /* 费曼讲完的庆祝 */
 .msy-celebrate {
   position: relative; overflow: hidden;
-  margin: 4px 0 12px; padding: 20px 16px 16px;
-  border-radius: 14px; text-align: center;
-  background: linear-gradient(135deg, rgba(var(--primary-rgb), .1), rgba(139,92,246,.14));
-  border: 1px solid var(--primary);
+  margin: 4px 0 14px; padding: 22px 16px 16px;
+  border-radius: 16px; text-align: center;
+  background: linear-gradient(140deg, rgba(var(--primary-rgb), .1), color-mix(in srgb, var(--accent) 16%, transparent));
+  border: 1px solid rgba(var(--primary-rgb), .4);
   animation: msy-pop .32s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes msy-pop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -627,69 +689,83 @@
   0% { transform: translateY(0) rotate(0); opacity: 1; }
   100% { transform: translateY(150px) rotate(320deg); opacity: 0; }
 }
-.msy-celebrate-icon { font-size: 30px; line-height: 1; margin-bottom: 6px;
+.msy-celebrate-icon { font-size: 32px; line-height: 1; margin-bottom: 8px;
   animation: msy-bounce-icon 1.2s ease-in-out infinite; }
 @keyframes msy-bounce-icon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-.msy-celebrate-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.msy-celebrate-title { font-size: 15px; font-weight: 700; color: var(--text); }
 .msy-celebrate-desc { font-size: 12px; color: var(--text-dim); margin-top: 5px; line-height: 1.7; }
 .msy-celebrate-actions {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-top: 13px;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-top: 14px;
 }
 
 /* 空状态 */
-.msy-empty { text-align: center; padding: 26px 14px; }
+.msy-empty { text-align: center; padding: 10px 6px 8px; animation: msy-in .3s ease-out; }
 .msy-empty .msy-empty-icon {
-  width: 54px; height: 54px; margin: 0 auto 12px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  width: 52px; height: 52px; margin: 6px auto 12px;
+  border-radius: 17px;
+  background: linear-gradient(140deg, var(--primary), var(--accent));
   display: flex; align-items: center; justify-content: center;
-  color: #fff; box-shadow: 0 8px 22px rgba(var(--primary-rgb), .32);
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(var(--primary-rgb), .34), inset 0 1px 0 rgba(255, 255, 255, .25),
+              0 0 0 6px rgba(var(--primary-rgb), .08), 0 0 0 12px rgba(var(--primary-rgb), .04);
 }
-.msy-empty .msy-empty-icon .msy-i { width: 26px; height: 26px; }
+.msy-empty .msy-empty-icon .msy-i { width: 25px; height: 25px; }
 .msy-empty .msy-empty-title {
-  font-size: 13.5px; color: var(--text); font-weight: 600;
-  line-height: 1.55; margin-bottom: 5px;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: 16px; color: var(--text); font-weight: 700;
+  line-height: 1.5; margin-bottom: 4px; letter-spacing: .3px;
 }
 .msy-empty .msy-empty-desc {
-  font-size: 12px; line-height: 1.75; color: var(--text-dim);
-  max-width: 300px; margin: 0 auto;
+  font-size: 12.5px; line-height: 1.75; color: var(--text-dim);
+  max-width: 290px; margin: 0 auto;
 }
 .msy-empty .msy-empty-note {
-  display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 8px;
-  font-size: 11.5px; color: var(--warn); background: var(--warn-soft);
+  display: inline-flex; align-items: center; gap: 5px; text-align: left;
+  margin: 8px auto 0; padding: 4px 10px; border-radius: 999px;
+  font-size: 11.5px; line-height: 1.6; color: var(--warn); background: var(--warn-soft);
+  border: 1px solid color-mix(in srgb, var(--warn) 25%, transparent);
 }
+.msy-empty .msy-empty-note .msy-i { width: 12px; height: 12px; }
 .msy-personas {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-  gap: 5px; margin: 12px 0 2px;
+  margin: 12px auto 0; max-width: 340px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 5px;
 }
-.msy-personas-label { font-size: 11.5px; color: var(--text-faint); margin-right: 1px; }
+.msy-personas-label {
+  font-size: 11px; font-weight: 600; color: var(--text-faint); margin-right: 2px;
+}
 .msy-persona {
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 9px; border-radius: 999px;
+  padding: 4px 10px; border-radius: 999px;
   border: 1px solid var(--border); background: var(--bg);
   color: var(--text-dim); font-size: 11.5px; font-family: inherit;
-  cursor: pointer; transition: all .14s;
+  cursor: pointer; transition: all .15s;
 }
 .msy-persona .msy-i { width: 12px; height: 12px; }
-.msy-persona:hover { border-color: var(--primary); color: var(--primary); }
+.msy-persona:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
 .msy-persona[aria-pressed="true"] {
-  background: var(--primary); border-color: var(--primary);
-  color: var(--primary-fg); font-weight: 600;
+  background: var(--primary-soft); border-color: var(--primary);
+  color: var(--primary); font-weight: 600;
 }
 .msy-empty .msy-start {
-  margin-top: 15px; padding: 9px 22px; border-radius: 10px; border: none;
-  background: var(--primary); color: var(--primary-fg);
-  font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  box-shadow: 0 4px 14px rgba(var(--primary-rgb), .32);
-  transition: transform .15s, box-shadow .15s, background .15s;
+  margin-top: 14px; padding: 10px 26px; border-radius: 12px; border: none;
+  background: linear-gradient(140deg, var(--primary), var(--accent)); color: #fff;
+  font-size: 13.5px; font-weight: 650; font-family: inherit; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+  box-shadow: 0 6px 18px rgba(var(--primary-rgb), .36), inset 0 1px 0 rgba(255, 255, 255, .22);
+  transition: transform .15s, box-shadow .15s, filter .15s;
 }
 .msy-empty .msy-start:hover {
-  background: var(--primary-hover); transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(var(--primary-rgb), .42);
+  filter: brightness(1.06); transform: translateY(-1px);
+  box-shadow: 0 9px 24px rgba(var(--primary-rgb), .46), inset 0 1px 0 rgba(255, 255, 255, .22);
 }
 .msy-empty .msy-start:active { transform: translateY(0); }
+.msy-root[data-theme="dark"] .msy-empty .msy-start,
+.msy-root[data-theme="dark"] .msy-logo,
+.msy-root[data-theme="dark"] .msy-avatar,
+.msy-root[data-theme="dark"] .msy-empty .msy-empty-icon,
+.msy-root[data-theme="dark"] .msy-fab,
+.msy-root[data-theme="dark"] .msy-round.msy-send:not([data-state="stop"]),
+.msy-root[data-theme="dark"] .msy-row.user .msy-bubble { background: linear-gradient(140deg, #5b55e8, #7c5cf0); color: #fff; }
+.msy-root[data-theme="dark"] .msy-row.user .msy-bubble code { background: rgba(255, 255, 255, .2); }
 
 /* 往上翻历史时出现：一键回到最新 */
 .msy-jump {
@@ -705,18 +781,28 @@
 .msy-jump .msy-i { width: 12px; height: 12px; }
 .msy-jump[data-show="1"] { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 .msy-jump:hover { color: var(--primary); border-color: var(--primary); }
-.msy-jump[data-new="1"] { color: var(--primary-fg); background: var(--primary); border-color: var(--primary); }
+.msy-jump[data-new="1"] { color: #fff; background: var(--primary); border-color: var(--primary); }
 
-/* ---------------- 底部输入 ---------------- */
+/* ---------------- 底部输入 ----------------
+   输入框、麦克风、发送合成一张「输入卡片」，聚焦时整张卡片亮起来 */
 .msy-foot { flex: none; border-top: 1px solid var(--border); background: var(--bg); }
 .msy-input-row {
-  display: flex; align-items: flex-end; gap: 7px; padding: 10px 11px 7px;
+  display: flex; align-items: flex-end; gap: 6px;
+  margin: 10px 10px 6px; padding: 5px 5px 5px 2px;
+  border: 1px solid var(--border-strong); border-radius: 16px;
+  background: var(--bg-soft);
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.msy-input-row:hover { border-color: color-mix(in srgb, var(--primary) 30%, var(--border-strong)); }
+.msy-input-row:focus-within {
+  border-color: var(--primary); background: var(--bg);
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb), .12);
 }
 .msy-input-wrap { flex: 1; min-width: 0; position: relative; display: flex; }
 
 /* 输入框内的清除按钮：有内容时才出现，免得空着的时候多一个灰点 */
 .msy-input-clear {
-  position: absolute; top: 8px; right: 8px;
+  position: absolute; top: 7px; right: 4px;
   width: 20px; height: 20px; border-radius: 50%;
   border: none; background: var(--bg-hover); color: var(--text-dim);
   cursor: pointer; padding: 0;
@@ -727,26 +813,20 @@
 .msy-input-clear:hover { background: var(--border-strong); color: var(--text); }
 
 .msy-input {
-  flex: 1; min-height: 38px; max-height: 132px;
+  flex: 1; min-height: 34px; max-height: 132px;
   resize: none; overflow-y: auto;
-  padding: 9px 32px 9px 11px; border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg-soft); color: var(--text);
-  font-family: inherit; font-size: 13px; line-height: 1.55;
+  padding: 7px 28px 7px 10px; border-radius: 10px;
+  border: none;
+  background: transparent; color: var(--text);
+  font-family: inherit; font-size: 13.5px; line-height: 1.55;
   outline: none;
-  transition: border-color .15s, background .15s, box-shadow .15s;
 }
 .msy-input::placeholder { color: var(--text-faint); }
-.msy-input:hover { border-color: var(--border-strong); }
-.msy-input:focus {
-  border-color: var(--primary); background: var(--bg);
-  box-shadow: 0 0 0 3px var(--primary-soft);
-}
 .msy-input:disabled { opacity: .55; cursor: not-allowed; }
 
 .msy-round {
-  flex: none; width: 38px; height: 38px; border-radius: 50%;
-  border: 1px solid var(--border); background: var(--bg-soft);
+  flex: none; width: 34px; height: 34px; border-radius: 11px;
+  border: none; background: transparent;
   color: var(--text-dim); cursor: pointer; padding: 0;
   display: flex; align-items: center; justify-content: center;
   transition: all .15s; position: relative;
@@ -755,17 +835,17 @@
 .msy-round:hover:not(:disabled) { background: var(--bg-hover); color: var(--text); }
 .msy-round:disabled { opacity: .45; cursor: not-allowed; }
 .msy-round.msy-send {
-  background: var(--primary); border-color: var(--primary);
-  color: var(--primary-fg);
-  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .3);
+  background: linear-gradient(140deg, var(--primary), var(--accent));
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .32);
 }
-.msy-round.msy-send:hover:not(:disabled) { background: var(--primary-hover); }
+.msy-round.msy-send:hover:not(:disabled) { filter: brightness(1.08); color: #fff; }
 .msy-round.msy-send[data-state="stop"] {
-  background: var(--danger); border-color: var(--danger); color: #fff;
+  background: var(--danger); color: #fff;
   box-shadow: 0 3px 10px rgba(var(--danger-rgb), .3);
 }
 .msy-round.msy-mic[data-state="recording"] {
-  background: var(--danger); border-color: var(--danger); color: #fff;
+  background: var(--danger); color: #fff;
   animation: msy-rec 1.4s ease-in-out infinite;
 }
 @keyframes msy-rec {
@@ -773,7 +853,7 @@
   50% { box-shadow: 0 0 0 8px rgba(var(--danger-rgb), 0); }
 }
 .msy-level {
-  position: absolute; inset: -3px; border-radius: 50%;
+  position: absolute; inset: -3px; border-radius: 13px;
   border: 2px solid var(--danger); pointer-events: none;
   transform: scale(1); opacity: 0;
   transition: transform .08s linear, opacity .1s;
@@ -781,16 +861,17 @@
 .msy-mic[data-state="recording"] .msy-level { opacity: .9; }
 
 .msy-foot-bar {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; row-gap: 6px;
-  padding: 0 13px 9px;
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; row-gap: 6px;
+  padding: 0 12px 9px;
   font-size: 11.5px; color: var(--text-faint);
 }
 .msy-foot-bar label, .msy-foot-bar button { white-space: nowrap; flex: none; }
 .msy-foot-bar label {
   display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
-  user-select: none; transition: color .15s;
+  padding: 3px 8px 3px 6px; border-radius: 999px;
+  user-select: none; transition: color .15s, background .15s;
 }
-.msy-foot-bar label:hover { color: var(--text-dim); }
+.msy-foot-bar label:hover { color: var(--text-dim); background: var(--bg-hover); }
 .msy-foot-bar input[type="checkbox"] {
   margin: 0; cursor: pointer; accent-color: var(--primary);
   width: 13px; height: 13px;
@@ -800,8 +881,8 @@
 .msy-foot-bar button {
   display: inline-flex; align-items: center; gap: 4px;
   border: none; background: transparent; color: var(--text-faint);
-  font-size: 11.5px; font-family: inherit; cursor: pointer; padding: 2px 4px;
-  border-radius: 5px; transition: color .15s, background .15s;
+  font-size: 11.5px; font-family: inherit; cursor: pointer; padding: 3px 7px;
+  border-radius: 999px; transition: color .15s, background .15s;
 }
 .msy-foot-bar button:hover:not(:disabled) { color: var(--text); background: var(--bg-hover); }
 .msy-foot-bar button:disabled { opacity: .4; cursor: not-allowed; }
@@ -810,7 +891,7 @@
   color: var(--danger); background: var(--danger-soft); font-weight: 600;
 }
 .msy-foot-bar .msy-voice-toggle {
-  padding: 3px 9px; border-radius: 999px;
+  padding: 3px 10px 3px 8px;
   border: 1px solid var(--border); background: var(--bg-soft);
 }
 .msy-foot-bar .msy-voice-toggle:hover { border-color: var(--primary); color: var(--primary); }
@@ -820,14 +901,15 @@
 .msy-foot-bar .msy-voice-toggle.on:hover { background: var(--danger); color: #fff; opacity: .9; }
 
 .msy-status {
-  flex: none; padding: 5px 13px; font-size: 11.5px;
+  flex: none; padding: 6px 14px; font-size: 11.5px;
   border-top: 1px solid var(--border);
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 7px;
   background: var(--bg-soft); color: var(--text-dim);
+  animation: msy-in .18s ease-out;
 }
 .msy-status[hidden] { display: none; }
-.msy-status.err { color: var(--danger); }
-.msy-status.ok { color: var(--ok); }
+.msy-status.err { color: var(--danger); background: var(--danger-soft); }
+.msy-status.ok { color: var(--ok); background: var(--ok-soft); }
 .msy-spin {
   width: 11px; height: 11px; flex: none;
   border: 2px solid var(--border-strong); border-top-color: var(--primary);
@@ -840,9 +922,6 @@
 .msy-root summary:focus-visible,
 .msy-root .msy-profile:focus-visible {
   outline: none; box-shadow: var(--focus);
-}
-.msy-head button:focus-visible, .msy-head .msy-profile:focus-visible {
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, .85);
 }
 .msy-foot-bar input[type="checkbox"]:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
@@ -884,7 +963,7 @@
     const fabCount = NS.h('span', { class: 'msy-fab-count' });
     fabCount.hidden = true;
     const fab = NS.h('button', { class: 'msy-fab', type: 'button', title: 'AI 复习助手（Alt+Shift+M）' }, [
-      icon('empty'),
+      icon('logo'),
       fabCount,
     ]);
 
@@ -974,7 +1053,10 @@
     const gearBtn = NS.h('button', { class: 'msy-icon-btn', type: 'button', title: '设置' }, [icon('settings')]);
     const foldBtn = NS.h('button', { class: 'msy-icon-btn', type: 'button', title: '收起' }, [icon('minimize')]);
     const head = NS.h('div', { class: 'msy-head' }, [
-      NS.h('span', { class: 'msy-brand' }, [icon('empty'), NS.h('span', { text: 'AI 复习助手' })]),
+      NS.h('span', { class: 'msy-brand' }, [
+        NS.h('span', { class: 'msy-logo' }, [icon('logo')]),
+        NS.h('span', { class: 'msy-brand-text', text: 'AI 复习助手' }),
+      ]),
       NS.h('span', { class: 'msy-spacer' }),
       profileChip,
       gearBtn,
@@ -1180,7 +1262,10 @@
       const body = NS.h('div', { class: 'msy-body' });
       const actions = NS.h('div', { class: 'msy-actions' });
       const bubble = NS.h('div', { class: 'msy-bubble' }, [body, actions]);
-      const row = NS.h('div', { class: `msy-row ${role}` }, [bubble]);
+      const row = NS.h('div', { class: `msy-row ${role}` }, [
+        role === 'assistant' ? NS.h('span', { class: 'msy-avatar', 'aria-hidden': 'true' }, [icon('logo')]) : null,
+        bubble,
+      ]);
       msgs.append(row);
       return { row, bubble, body, actions };
     }
@@ -1426,16 +1511,17 @@
         const mode = NS.modeById(state.mode);
         // 题目已经写在上面的题目条里了，这里不再重复一遍，改成说清楚这个模式会做什么
         const desc = mode.hint || '选一个模式开始复习。';
-        const descEl = NS.h('div', { class: 'msy-empty-desc', text: desc });
-        if (info?.paywalled && !info?.answer) {
-          descEl.append(NS.h('div', { class: 'msy-empty-note', text: '没读到本站答案（需要会员），AI 会用自己的知识回答。' }));
-        }
-
         const box = NS.h('div', { class: 'msy-empty' }, [
           NS.h('div', { class: 'msy-empty-icon' }, [icon(mode.icon)]),
           NS.h('div', { class: 'msy-empty-title', text: mode.label }),
-          descEl,
+          NS.h('div', { class: 'msy-empty-desc', text: desc }),
         ]);
+        if (info?.paywalled && !info?.answer) {
+          box.append(NS.h('div', { class: 'msy-empty-note' }, [
+            icon('alert'),
+            NS.h('span', { text: '没读到本站答案（需会员），AI 会用自己的知识回答' }),
+          ]));
+        }
 
         // 面试类模式下让人挑个面试官 —— 换个语气，复习体感完全不一样。
         // 这个是「选怎么问」，不是统计，所以留在面板上。

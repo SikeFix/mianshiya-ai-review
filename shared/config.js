@@ -224,6 +224,10 @@ MSY.ICONS = {
   close: svg('<path d="M6 6 18 18M18 6 6 18"/>'),
   refresh: svg('<path d="M20.5 12a8.5 8.5 0 1 1-2.4-5.9"/><path d="M20.5 4v5h-5"/>'),
   send: svg('<path d="M21.5 2.5 10.8 13.2"/><path d="M21.5 2.5 14.7 21.5l-3.9-8.3-8.3-3.9z"/>'),
+  logo: svg(
+    '<path d="M11 3.5 12.9 9l5.6 1.9-5.6 1.9L11 18.4l-1.9-5.6L3.5 10.9 9.1 9z"/>' +
+      '<path d="M18.5 14.5l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>'
+  ),
   down: svg('<path d="M12 5v14"/><path d="M6 13l6 6 6-6"/>'),
   stop: svg('<rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/>'),
   copy: svg('<rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15.5V5.5A2.5 2.5 0 0 1 7.5 3h10"/>'),

@@ -10,6 +10,7 @@
   --text: #111827;
   --dim: #566070;
   --primary: #4f46e5;
+  --btn-grad: linear-gradient(140deg, #4f46e5, #7c5cf0);
   --primary-fg: #ffffff;
   --primary-soft: #eef0ff;
   --primary-rgb: 79, 70, 229;
@@ -24,8 +25,7 @@
   --note-ok-bg: #f0fdf4;   --note-ok-bd: #bbf7d0;   --note-ok-fg: #14532d;
   --note-err-bg: #fef2f2;  --note-err-bd: #fecaca;  --note-err-fg: #7f1d1d;
   --toast-bg: #111827; --toast-fg: #ffffff;
-  --head-bg: linear-gradient(135deg, #4f46e5 0%, #6152ea 55%, #7c5cf0 100%);
-  --radius: 12px;
+  --radius: 14px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,6 +40,7 @@
     --text: #e8eaf0;
     --dim: #a3aab7;
     --primary: #8b90f9;
+    --btn-grad: linear-gradient(140deg, #5b55e8, #7c5cf0);
     --primary-fg: #10112a;
     --primary-soft: #262a4d;
     --primary-rgb: 139, 144, 249;
@@ -54,7 +55,6 @@
     --note-ok-bg: #0f2a1d;   --note-ok-bd: #1d5236;   --note-ok-fg: #bbf7d0;
     --note-err-bg: #2f1518;  --note-err-bd: #5f252b;  --note-err-fg: #fecaca;
     --toast-bg: #e8eaf0; --toast-fg: #111318;
-    --head-bg: linear-gradient(135deg, #3f39c4 0%, #4f43cf 55%, #6447d6 100%);
   }
 }
 
@@ -73,44 +73,63 @@ body {
 
 .wrap { max-width: 1000px; margin: 0 auto; padding: 0 22px 70px; }
 
-/* ---------------- 头部 ---------------- */
+/* ---------------- 头部 ----------------
+   以前是一整块 160px 高的渐变色带，内容只占上面一半。改成吸顶的紧凑顶栏，
+   跟页面里的面板一个样子：同色底 + 顶部一条彩带 + 渐变 logo。 */
 .top {
-  background: var(--head-bg);
-  color: #fff;
-  padding: 22px 0 20px;
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--card) 86%, transparent);
+  backdrop-filter: saturate(1.6) blur(12px);
+  -webkit-backdrop-filter: saturate(1.6) blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 13px 0 12px;
   margin-bottom: 20px;
 }
-.top .wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.brand { display: flex; align-items: center; gap: 13px; flex: 1; min-width: 260px; }
-.brand img { width: 44px; height: 44px; border-radius: 11px; box-shadow: 0 4px 14px rgba(0,0,0,.2); }
-.brand h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: .2px; }
-.brand p { margin: 1px 0 0; font-size: 12.5px; opacity: .88; }
+.top::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), #7c5cf0, #ec6fb4);
+}
+.top .wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-bottom: 0; }
+.brand { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 260px; }
+.brand img {
+  width: 38px; height: 38px; border-radius: 11px;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), .3);
+}
+.brand h1 { margin: 0; font-size: 16.5px; font-weight: 700; letter-spacing: .2px; }
+.brand p { margin: 0; font-size: 12.5px; color: var(--dim); }
 .top-actions { display: flex; gap: 8px; }
 .top-actions button {
-  border: 1px solid rgba(255,255,255,.4);
-  background: rgba(255,255,255,.14);
-  color: #fff; border-radius: 8px;
-  padding: 6px 13px; font-size: 12.5px; font-family: inherit;
-  cursor: pointer; transition: background .15s;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text); border-radius: 9px;
+  padding: 6px 13px; font-size: 12.5px; font-weight: 500; font-family: inherit;
+  cursor: pointer; transition: background .15s, border-color .15s;
 }
-.top-actions button:hover { background: rgba(255,255,255,.28); }
+.top-actions button:hover { background: var(--row-hover); border-color: var(--border-hover); }
 
-/* ---------------- 标签页 ---------------- */
+/* ---------------- 标签页 ----------------
+   分段控件，和面板的模式条同一个样子；滚动长页面时吸在顶栏下面 */
 .tabs {
-  display: flex; gap: 3px; margin-bottom: 16px;
-  background: var(--card); padding: 4px;
-  border-radius: 10px; border: 1px solid var(--border);
-  overflow-x: auto;
+  position: sticky; top: 84px; z-index: 10;
+  display: flex; gap: 2px; margin-bottom: 18px;
+  background: var(--input); padding: 4px;
+  border-radius: 13px; border: 1px solid var(--border);
+  box-shadow: 0 6px 18px -12px rgba(15, 23, 42, .25);
+  overflow-x: auto; scrollbar-width: none;
 }
+.tabs::-webkit-scrollbar { display: none; }
 .tabs button {
   flex: 1; min-width: 86px;
-  border: none; background: transparent; color: var(--dim);
-  padding: 8px 12px; border-radius: 7px;
+  border: 1px solid transparent; background: transparent; color: var(--dim);
+  padding: 7px 12px; border-radius: 9px;
   font-size: 13.5px; font-family: inherit; font-weight: 500;
   cursor: pointer; white-space: nowrap; transition: all .15s;
 }
-.tabs button:hover { background: var(--bg); color: var(--text); }
-.tabs button.active { background: var(--primary); color: var(--primary-fg); font-weight: 600; }
+.tabs button:hover { color: var(--text); background: rgba(var(--primary-rgb), .06); }
+.tabs button.active {
+  background: var(--card); border-color: var(--border); color: var(--primary); font-weight: 650;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .08), 0 2px 8px rgba(var(--primary-rgb), .14);
+}
 
 /* ---------------- 卡片 ---------------- */
 .panel { display: none; }
@@ -118,12 +137,15 @@ body {
 
 .card {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px;
+  border-radius: var(--radius); padding: 20px 22px; margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 16px -8px rgba(15, 23, 42, .08);
 }
+.panel.active { animation: fade-in .2s ease-out; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .card > h2 {
   margin: 0 0 4px; font-size: 15px; font-weight: 600;
   display: flex; align-items: center; gap: 7px;
-  padding-left: 9px; border-left: 3px solid var(--primary);
+  padding-left: 10px; border-left: 3px solid; border-image: linear-gradient(180deg, var(--primary), #7c5cf0) 1;
   line-height: 1.35;
 }
 .card > h2 .tip { font-size: 12px; font-weight: 400; color: var(--dim); }
@@ -186,12 +208,16 @@ select { cursor: pointer; }
 /* ---------------- 按钮 ---------------- */
 button.btn {
   border: 1px solid var(--border); background: var(--card); color: var(--text);
-  padding: 7px 15px; border-radius: 8px;
+  padding: 7px 15px; border-radius: 9px;
   font-size: 13px; font-family: inherit; cursor: pointer;
   transition: all .15s; white-space: nowrap;
 }
-button.btn:hover { background: var(--bg); }
-button.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--primary-fg); font-weight: 500; }
+button.btn:hover { background: var(--row-hover); border-color: var(--border-hover); }
+button.btn.primary {
+  background: var(--btn-grad); border-color: transparent;
+  color: #fff; font-weight: 600;
+  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .28);
+}
 button.btn.primary:hover { filter: brightness(1.08); }
 button.btn.danger { color: var(--danger); }
 button.btn.danger:hover { background: var(--danger-soft); border-color: var(--danger-border); }
@@ -452,3 +478,9 @@ kbd {
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 #toast.err { background: var(--danger); }
 #toast.ok { background: var(--ok); }
+
+/* 窄屏时顶栏会折成两行，标签页再吸顶就会压住内容 */
+@media (max-width: 720px) {
+  .top { position: static; }
+  .tabs { position: static; }
+}

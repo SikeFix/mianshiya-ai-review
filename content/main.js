@@ -377,7 +377,7 @@
       state.ui.addSystem('直接提问吧，当前题目已经作为上下文提供给 AI。');
       return;
     }
-    state.ui.addSystem(`—— ${label}开始 ——`);
+    state.ui.addSystem(`${label}开始`); // 两侧的分隔线由样式画
     send(kick, { silent: true });
   }
 
