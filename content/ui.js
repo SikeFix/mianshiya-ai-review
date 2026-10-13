@@ -18,26 +18,35 @@
 .msy-root [hidden] { display: none !important; }
 
 .msy-root {
-  /* ---- 浅色 ---- */
+  /* ---- 浅色 ----
+     主色从 #6366f1 压深到 #4f46e5：白字在旧主色上对比度只有 4.4，不到 WCAG AA；
+     中性色换成偏冷的 slate 系，和靛蓝主色更搭；警告/成功色也压深一档，
+     「完整答案需会员」这种小字以前在白底上几乎看不清。 */
   --bg: #ffffff;
-  --bg-soft: #f7f8fa;
-  --bg-sunken: #f1f3f6;
-  --bg-hover: #eceef2;
-  --border: #e3e6ec;
-  --border-strong: #d3d8e0;
-  --text: #1a1d23;
-  --text-dim: #6b7280;
-  --text-faint: #9aa1ad;
-  --primary: #6366f1;
-  --primary-hover: #5457e5;
+  --bg-soft: #f8fafc;
+  --bg-sunken: #f3f5f9;
+  --bg-hover: #edf0f5;
+  --border: #e2e7ef;
+  --border-strong: #cdd5e0;
+  --text: #111827;
+  --text-dim: #566070;
+  --text-faint: #8a93a3;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
   --primary-fg: #ffffff;
-  --primary-soft: #eef1ff;
-  --danger: #ef4444;
+  --primary-soft: #eef0ff;
+  --primary-rgb: 79, 70, 229;
+  --accent: #7c5cf0;
+  --danger: #dc2626;
   --danger-soft: #fef2f2;
-  --ok: #10b981;
-  --warn: #f59e0b;
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
-  --shadow-lg: 0 16px 48px rgba(16, 24, 40, .18), 0 2px 8px rgba(16, 24, 40, .08);
+  --danger-rgb: 220, 38, 38;
+  --ok: #059669;
+  --ok-soft: #ecfdf5;
+  --warn: #d97706;
+  --warn-soft: #fffbeb;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .07);
+  --shadow-lg: 0 18px 50px rgba(15, 23, 42, .18), 0 2px 8px rgba(15, 23, 42, .08);
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgba(var(--primary-rgb), .55);
   --radius: 14px;
 
   position: fixed;
@@ -56,22 +65,30 @@
 }
 
 .msy-root[data-theme="dark"] {
-  --bg: #1a1d24;
-  --bg-soft: #22262e;
-  --bg-sunken: #1e2129;
-  --bg-hover: #2c313b;
-  --border: #313742;
-  --border-strong: #3d4450;
-  --text: #e7e9ee;
-  --text-dim: #9aa1ad;
-  --text-faint: #767e8b;
-  --primary: #7c83f5;
-  --primary-hover: #8d93f7;
-  --primary-fg: #14161b;
-  --primary-soft: #242a3d;
+  --bg: #171a21;
+  --bg-soft: #1e222b;
+  --bg-sunken: #13151b;
+  --bg-hover: #282d38;
+  --border: #2b313c;
+  --border-strong: #3b4250;
+  --text: #e8eaf0;
+  --text-dim: #a3aab7;
+  --text-faint: #7d8594;
+  --primary: #8b90f9;
+  --primary-hover: #a1a5fb;
+  --primary-fg: #10112a;
+  --primary-soft: #262a4d;
+  --primary-rgb: 139, 144, 249;
+  --accent: #a78bfa;
   --danger: #f87171;
-  --danger-soft: #2d1e21;
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, .6), 0 2px 8px rgba(0, 0, 0, .4);
+  --danger-soft: #3a1d22;
+  --danger-rgb: 248, 113, 113;
+  --ok: #34d399;
+  --ok-soft: #12302a;
+  --warn: #fbbf24;
+  --warn-soft: #33290f;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-lg: 0 18px 50px rgba(0, 0, 0, .6), 0 2px 8px rgba(0, 0, 0, .4);
 }
 
 /* ---------------- 图标 ---------------- */
@@ -84,10 +101,10 @@
   width: 52px; height: 52px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, .42), 0 2px 6px rgba(16, 24, 40, .12);
+  box-shadow: 0 8px 24px rgba(var(--primary-rgb), .42), 0 2px 6px rgba(16, 24, 40, .12);
   display: flex; align-items: center; justify-content: center;
   transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
   touch-action: none;
@@ -95,13 +112,13 @@
   padding: 0;
 }
 .msy-fab .msy-i { width: 22px; height: 22px; }
-.msy-fab:hover { transform: scale(1.07); box-shadow: 0 10px 30px rgba(99,102,241,.55); }
+.msy-fab:hover { transform: scale(1.07); box-shadow: 0 10px 30px rgba(var(--primary-rgb), .55); }
 .msy-fab:active { transform: scale(.95); }
 .msy-fab .msy-fab-count {
   position: absolute; top: -4px; right: -4px;
   min-width: 19px; height: 19px; padding: 0 5px;
   border-radius: 999px; border: 2px solid #fff;
-  background: #ef4444; color: #fff;
+  background: var(--danger); color: #fff;
   font-size: 10.5px; font-weight: 700; line-height: 15px;
   text-align: center; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -113,7 +130,7 @@
 }
 .msy-fab[data-busy="1"]::after {
   content: ""; position: absolute; inset: -5px;
-  border-radius: 50%; border: 2px solid rgba(99,102,241,.5);
+  border-radius: 50%; border: 2px solid rgba(var(--primary-rgb), .5);
   animation: msy-pulse 1.5s ease-out infinite;
 }
 @keyframes msy-pulse {
@@ -135,7 +152,7 @@
 
 /* 语音对话模式：面板描一圈，提醒你麦克风是开着的 */
 .msy-panel[data-voice="1"] {
-  box-shadow: var(--shadow-lg), 0 0 0 2px rgba(239, 68, 68, .55);
+  box-shadow: var(--shadow-lg), 0 0 0 2px rgba(var(--danger-rgb), .55);
 }
 .msy-panel[data-voice="1"] .msy-brand::after {
   content: "语音对话中"; margin-left: 6px;
@@ -158,12 +175,15 @@
 .msy-head {
   display: flex; align-items: center; gap: 8px;
   padding: 10px 10px 10px 12px;
-  background: linear-gradient(135deg, #6366f1 0%, #7c6ef2 55%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #6152ea 55%, #7c5cf0 100%);
   color: #fff;
   cursor: move;
   user-select: none;
   flex: none;
   position: relative;
+}
+.msy-root[data-theme="dark"] .msy-head {
+  background: linear-gradient(135deg, #3f39c4 0%, #4f43cf 55%, #6447d6 100%);
 }
 .msy-head::after {
   content: ""; position: absolute; inset: 0;
@@ -204,12 +224,24 @@
 .msy-icon-btn:hover { background: rgba(255,255,255,.22); color: #fff; }
 
 /* ---------------- 模式条 ---------------- */
+.msy-modes-wrap { position: relative; flex: none; }
+/* 模式按钮放不下时横向滚动；两侧的渐隐提示「那边还有」，
+   否则「自测」「自由对话」藏在右边根本没人发现 */
+.msy-modes-wrap::before, .msy-modes-wrap::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 28px;
+  pointer-events: none; opacity: 0; transition: opacity .18s; z-index: 1;
+}
+.msy-modes-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
+.msy-modes-wrap::after { right: 0; background: linear-gradient(270deg, var(--bg), transparent); }
+.msy-modes-wrap[data-more-left="1"]::before,
+.msy-modes-wrap[data-more-right="1"]::after { opacity: 1; }
 .msy-modes {
   display: flex; gap: 5px;
   padding: 9px 10px 8px;
   overflow-x: auto; flex: none;
   background: var(--bg);
   scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 .msy-modes::-webkit-scrollbar { display: none; }
 .msy-mode {
@@ -229,7 +261,7 @@
 .msy-mode[aria-pressed="true"] {
   background: var(--primary); border-color: var(--primary);
   color: var(--primary-fg); font-weight: 600;
-  box-shadow: 0 2px 8px rgba(99,102,241,.28);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), .28);
 }
 
 /* ---------------- 题目条 ---------------- */
@@ -277,10 +309,14 @@
 }
 .msy-qbar .msy-badge { display: inline-flex; align-items: center; gap: 3px; }
 .msy-qbar .msy-badge .msy-i { width: 12px; height: 12px; }
-.msy-qbar .msy-badge.ok { color: var(--ok); }
-.msy-qbar .msy-badge.warn { color: var(--warn); }
+.msy-qbar .msy-badge.ok, .msy-qbar .msy-badge.warn {
+  padding: 1px 7px 1px 5px; border-radius: 999px; font-weight: 500;
+}
+.msy-qbar .msy-badge.ok { color: var(--ok); background: var(--ok-soft); }
+.msy-qbar .msy-badge.warn { color: var(--warn); background: var(--warn-soft); }
 
 /* ---------------- 消息区 ---------------- */
+.msy-body-wrap { flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column; }
 .msy-msgs {
   flex: 1; min-height: 0;
   overflow-y: auto; overscroll-behavior: contain;
@@ -317,7 +353,7 @@
   color: var(--primary-fg);
   border-bottom-right-radius: 5px;
   white-space: pre-wrap;
-  box-shadow: 0 2px 8px rgba(99,102,241,.22);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), .22);
 }
 .msy-row.assistant .msy-bubble { border-bottom-left-radius: 5px; }
 .msy-row.sys .msy-bubble {
@@ -576,7 +612,7 @@
   position: relative; overflow: hidden;
   margin: 4px 0 12px; padding: 20px 16px 16px;
   border-radius: 14px; text-align: center;
-  background: linear-gradient(135deg, rgba(99,102,241,.1), rgba(139,92,246,.14));
+  background: linear-gradient(135deg, rgba(var(--primary-rgb), .1), rgba(139,92,246,.14));
   border: 1px solid var(--primary);
   animation: msy-pop .32s cubic-bezier(.34,1.56,.64,1);
 }
@@ -605,9 +641,9 @@
 .msy-empty .msy-empty-icon {
   width: 54px; height: 54px; margin: 0 auto 12px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   display: flex; align-items: center; justify-content: center;
-  color: #fff; box-shadow: 0 8px 22px rgba(99,102,241,.32);
+  color: #fff; box-shadow: 0 8px 22px rgba(var(--primary-rgb), .32);
 }
 .msy-empty .msy-empty-icon .msy-i { width: 26px; height: 26px; }
 .msy-empty .msy-empty-title {
@@ -617,6 +653,11 @@
 }
 .msy-empty .msy-empty-desc {
   font-size: 12px; line-height: 1.75; color: var(--text-dim);
+  max-width: 300px; margin: 0 auto;
+}
+.msy-empty .msy-empty-note {
+  display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 8px;
+  font-size: 11.5px; color: var(--warn); background: var(--warn-soft);
 }
 .msy-personas {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
@@ -641,14 +682,30 @@
   background: var(--primary); color: var(--primary-fg);
   font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer;
   display: inline-flex; align-items: center; gap: 6px;
-  box-shadow: 0 4px 14px rgba(99,102,241,.32);
+  box-shadow: 0 4px 14px rgba(var(--primary-rgb), .32);
   transition: transform .15s, box-shadow .15s, background .15s;
 }
 .msy-empty .msy-start:hover {
   background: var(--primary-hover); transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(99,102,241,.42);
+  box-shadow: 0 6px 18px rgba(var(--primary-rgb), .42);
 }
 .msy-empty .msy-start:active { transform: translateY(0); }
+
+/* 往上翻历史时出现：一键回到最新 */
+.msy-jump {
+  position: absolute; left: 50%; bottom: 12px; transform: translate(-50%, 6px);
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text-dim);
+  font-size: 11.5px; font-family: inherit; cursor: pointer;
+  box-shadow: var(--shadow-sm), 0 4px 14px rgba(15, 23, 42, .12);
+  opacity: 0; pointer-events: none;
+  transition: opacity .18s, transform .18s, color .15s, border-color .15s;
+}
+.msy-jump .msy-i { width: 12px; height: 12px; }
+.msy-jump[data-show="1"] { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+.msy-jump:hover { color: var(--primary); border-color: var(--primary); }
+.msy-jump[data-new="1"] { color: var(--primary-fg); background: var(--primary); border-color: var(--primary); }
 
 /* ---------------- 底部输入 ---------------- */
 .msy-foot { flex: none; border-top: 1px solid var(--border); background: var(--bg); }
@@ -700,20 +757,20 @@
 .msy-round.msy-send {
   background: var(--primary); border-color: var(--primary);
   color: var(--primary-fg);
-  box-shadow: 0 3px 10px rgba(99,102,241,.3);
+  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .3);
 }
 .msy-round.msy-send:hover:not(:disabled) { background: var(--primary-hover); }
 .msy-round.msy-send[data-state="stop"] {
   background: var(--danger); border-color: var(--danger); color: #fff;
-  box-shadow: 0 3px 10px rgba(239,68,68,.3);
+  box-shadow: 0 3px 10px rgba(var(--danger-rgb), .3);
 }
 .msy-round.msy-mic[data-state="recording"] {
   background: var(--danger); border-color: var(--danger); color: #fff;
   animation: msy-rec 1.4s ease-in-out infinite;
 }
 @keyframes msy-rec {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,.5); }
-  50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(var(--danger-rgb), .5); }
+  50% { box-shadow: 0 0 0 8px rgba(var(--danger-rgb), 0); }
 }
 .msy-level {
   position: absolute; inset: -3px; border-radius: 50%;
@@ -724,10 +781,11 @@
 .msy-mic[data-state="recording"] .msy-level { opacity: .9; }
 
 .msy-foot-bar {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; row-gap: 6px;
   padding: 0 13px 9px;
   font-size: 11.5px; color: var(--text-faint);
 }
+.msy-foot-bar label, .msy-foot-bar button { white-space: nowrap; flex: none; }
 .msy-foot-bar label {
   display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
   user-select: none; transition: color .15s;
@@ -748,6 +806,9 @@
 .msy-foot-bar button:hover:not(:disabled) { color: var(--text); background: var(--bg-hover); }
 .msy-foot-bar button:disabled { opacity: .4; cursor: not-allowed; }
 .msy-foot-bar button.msy-stop { color: var(--danger); font-weight: 600; }
+.msy-foot-bar button.msy-clear[data-confirm="1"] {
+  color: var(--danger); background: var(--danger-soft); font-weight: 600;
+}
 .msy-foot-bar .msy-voice-toggle {
   padding: 3px 9px; border-radius: 999px;
   border: 1px solid var(--border); background: var(--bg-soft);
@@ -774,12 +835,29 @@
 }
 @keyframes msy-spin { to { transform: rotate(360deg); } }
 
+/* 键盘操作时要看得出焦点在哪；鼠标点击不出框 */
+.msy-root button:focus-visible,
+.msy-root summary:focus-visible,
+.msy-root .msy-profile:focus-visible {
+  outline: none; box-shadow: var(--focus);
+}
+.msy-head button:focus-visible, .msy-head .msy-profile:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .85);
+}
+.msy-foot-bar input[type="checkbox"]:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
 @media (prefers-reduced-motion: reduce) {
   .msy-root * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 `;
 
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  /**
+   * 按钮里的文字节点。不能直接 querySelector('span') —— 带图标的按钮第一个 span
+   * 是图标本身，改它的 textContent 会把 SVG 换成文字，按钮上就出现两遍字。
+   */
+  const labelOf = (btn) => btn.querySelector(':scope > span:not(.msy-i)');
 
   function createUI() {
     const host = document.createElement('div');
@@ -819,7 +897,8 @@
         dataset: { mode: m.id },
       }, [icon(m.icon), NS.h('span', { text: m.label })])
     );
-    const modesBar = NS.h('div', { class: 'msy-modes' }, modeBtns);
+    const modesBar = NS.h('div', { class: 'msy-modes', role: 'toolbar', 'aria-label': '复习模式' }, modeBtns);
+    const modesWrap = NS.h('div', { class: 'msy-modes-wrap' }, [modesBar]);
     // 面试范围横幅：只在设了范围时显示
     const scopeBar = NS.h('div', { class: 'msy-scope' });
     scopeBar.hidden = true;
@@ -832,7 +911,12 @@
       qMeta,
     ]);
 
-    const msgs = NS.h('div', { class: 'msy-msgs' });
+    const msgs = NS.h('div', { class: 'msy-msgs', role: 'log', 'aria-live': 'polite' });
+    const jumpBtn = NS.h('button', { class: 'msy-jump', type: 'button', title: '回到最新消息' }, [
+      icon('down'),
+      NS.h('span', { text: '回到最新' }),
+    ]);
+    const bodyWrap = NS.h('div', { class: 'msy-body-wrap' }, [msgs, jumpBtn]);
 
     const input = NS.h('textarea', {
       class: 'msy-input',
@@ -861,7 +945,9 @@
       icon('save'),
       NS.h('span', { text: '存笔记' }),
     ]);
-    const clearBtn = NS.h('button', { type: 'button' }, [NS.h('span', { text: '清空' })]);
+    const clearBtn = NS.h('button', { class: 'msy-clear', type: 'button', title: '清空当前模式的对话' }, [
+      NS.h('span', { text: '清空' }),
+    ]);
     const voiceBtn = NS.h('button', { class: 'msy-voice-toggle', type: 'button' }, [
       icon('interview'),
       NS.h('span', { text: '语音对话' }),
@@ -879,7 +965,9 @@
     const status = NS.h('div', { class: 'msy-status' });
     status.hidden = true;
 
-    const profileChip = NS.h('span', { class: 'msy-profile', title: '点击切换 AI 方案', dataset: { ok: '0' } }, [
+    const profileChip = NS.h('span', {
+      class: 'msy-profile', title: '点击切换 AI 方案', role: 'button', tabindex: '0', dataset: { ok: '0' },
+    }, [
       NS.h('span', { class: 'msy-dot' }),
       NS.h('span', { class: 'msy-pname', text: '未配置' }),
     ]);
@@ -894,7 +982,9 @@
     ]);
 
     const resize = NS.h('div', { class: 'msy-resize', title: '拖动调整大小' });
-    const panel = NS.h('div', { class: 'msy-panel' }, [resize, head, modesBar, scopeBar, qbar, msgs, status, foot]);
+    const panel = NS.h('div', { class: 'msy-panel', role: 'dialog', 'aria-label': 'AI 复习助手' }, [
+      resize, head, modesWrap, scopeBar, qbar, bodyWrap, status, foot,
+    ]);
 
     root.append(fab, panel);
 
@@ -917,12 +1007,19 @@
     };
 
     /* ---------------- 位置 / 大小 ---------------- */
+    /**
+     * 悬浮球和面板共用一个锚点（右下角）。悬浮球很小，可以拖到很高的位置；
+     * 但同一个锚点套到 640px 高的面板上，顶部就跑出屏幕了，标题栏都够不着。
+     * 所以面板单独再夹一次：保证整个面板留在可视区里。
+     */
     function applyPos() {
       const { right, bottom } = state.pos;
-      panel.style.right = `${right}px`;
-      panel.style.bottom = `${bottom}px`;
       fab.style.right = `${right}px`;
       fab.style.bottom = `${bottom}px`;
+      const w = panel.offsetWidth || state.size.width;
+      const h = panel.offsetHeight || state.size.height;
+      panel.style.right = `${clamp(right, 4, Math.max(4, window.innerWidth - w - 4))}px`;
+      panel.style.bottom = `${clamp(bottom, 4, Math.max(4, window.innerHeight - h - 4))}px`;
     }
 
     function applySize() {
@@ -930,7 +1027,23 @@
       const h = clamp(state.size.height, 320, Math.max(360, window.innerHeight - 30));
       panel.style.width = `${w}px`;
       panel.style.height = `${h}px`;
+      syncModeFades();
     }
+
+    /* ---------------- 模式条滚动 ---------------- */
+    function syncModeFades() {
+      const max = modesBar.scrollWidth - modesBar.clientWidth;
+      modesWrap.dataset.moreLeft = modesBar.scrollLeft > 2 ? '1' : '0';
+      modesWrap.dataset.moreRight = modesBar.scrollLeft < max - 2 ? '1' : '0';
+    }
+    modesBar.addEventListener('scroll', syncModeFades, { passive: true });
+    // 普通鼠标没有横向滚轮，竖着滚也让它横向走
+    modesBar.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      if (modesBar.scrollWidth <= modesBar.clientWidth) return;
+      e.preventDefault();
+      modesBar.scrollLeft += e.deltaY;
+    }, { passive: false });
 
     /**
      * 通用拖拽，用 pointer capture，鼠标移出窗口也不丢。
@@ -963,14 +1076,20 @@
       });
     }
 
+    // 按「当前看得见的那个」的尺寸来夹，拖出屏幕边缘之后往回拖不会有一段没反应
     const posDrag = (start, origin, ev) => {
+      const el = state.collapsed ? fab : panel;
       state.pos = {
-        right: clamp(origin.right - (ev.clientX - start.x), 4, window.innerWidth - 80),
-        bottom: clamp(origin.bottom - (ev.clientY - start.y), 4, window.innerHeight - 60),
+        right: clamp(origin.right - (ev.clientX - start.x), 4, Math.max(4, window.innerWidth - el.offsetWidth - 4)),
+        bottom: clamp(origin.bottom - (ev.clientY - start.y), 4, Math.max(4, window.innerHeight - el.offsetHeight - 4)),
       };
       applyPos();
     };
-    const dragStart = () => ({ ...state.pos });
+    // 起点取面板实际所在的位置（可能被 applyPos 夹过），而不是存下来的原始值
+    const dragStart = () =>
+      state.collapsed
+        ? { ...state.pos }
+        : { right: parseFloat(panel.style.right) || state.pos.right, bottom: parseFloat(panel.style.bottom) || state.pos.bottom };
 
     makeDrag(head, { start: dragStart, move: posDrag }, { onUp: () => emit('persistPosition', state.pos), ignoreButtons: true });
     makeDrag(fab, { start: dragStart, move: posDrag }, { onUp: () => emit('persistPosition', state.pos) });
@@ -986,6 +1105,7 @@
             height: clamp(origin.height - (ev.clientY - start.y), 320, window.innerHeight - 40),
           };
           applySize();
+          applyPos();
         },
       },
       { onUp: () => emit('persistSize', state.size) }
@@ -1025,9 +1145,21 @@
 
     /* ---------------- 滚动 ---------------- */
     const nearBottom = () => msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight < 70;
+    const syncJump = () => {
+      const show = !nearBottom();
+      jumpBtn.dataset.show = show ? '1' : '0';
+      if (!show) jumpBtn.dataset.new = '0';
+    };
     const scrollToBottom = (force) => {
       if (force || nearBottom()) msgs.scrollTop = msgs.scrollHeight;
+      else jumpBtn.dataset.new = '1'; // 你在翻旧消息，下面又来了新内容
+      syncJump();
     };
+    msgs.addEventListener('scroll', syncJump, { passive: true });
+    jumpBtn.addEventListener('click', () => {
+      msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' });
+      jumpBtn.dataset.new = '0';
+    });
 
     /* ---------------- 消息渲染 ---------------- */
     const pendingRender = new Map(); // 行元素 -> 待执行的渲染定时器
@@ -1166,6 +1298,7 @@
         fab.hidden = !state.collapsed;
         if (!state.collapsed) {
           applySize();
+          applyPos();
           setTimeout(() => input.focus(), 30);
         }
       },
@@ -1176,8 +1309,8 @@
         if (ui.position) state.pos = { right: ui.position.right ?? 22, bottom: ui.position.bottom ?? 22 };
         if (ui.width) state.size.width = ui.width;
         if (ui.height) state.size.height = ui.height;
-        applyPos();
         applySize();
+        applyPos();
       },
       getPosition: () => ({ ...state.pos }),
       getSize: () => ({ ...state.size }),
@@ -1255,7 +1388,18 @@
 
       setMode(modeId) {
         state.mode = modeId;
-        for (const b of modeBtns) b.setAttribute('aria-pressed', String(b.dataset.mode === modeId));
+        for (const b of modeBtns) {
+          const on = b.dataset.mode === modeId;
+          b.setAttribute('aria-pressed', String(on));
+          // 选中的模式在可视区外（比如从设置页切到「自由对话」），滚过去让人看见
+          if (on && modesBar.clientWidth) {
+            const l = b.offsetLeft - 10;
+            const r = b.offsetLeft + b.offsetWidth + 10;
+            if (l < modesBar.scrollLeft) modesBar.scrollLeft = l;
+            else if (r > modesBar.scrollLeft + modesBar.clientWidth) modesBar.scrollLeft = r - modesBar.clientWidth;
+          }
+        }
+        syncModeFades();
         const m = NS.modeById(modeId);
         // 提示要如实：关掉自动断句时不能还写着「说完会自动停」
         const voice = state.asrHint ? `，${state.asrHint}` : '';
@@ -1270,6 +1414,8 @@
       /* -------- 消息 -------- */
       clear() {
         msgs.textContent = '';
+        jumpBtn.dataset.show = '0';
+        jumpBtn.dataset.new = '0';
         pendingRender.clear();
         lastQuick = null;
         lastRate = null;
@@ -1278,19 +1424,17 @@
       showEmpty(info) {
         api.clear();
         const mode = NS.modeById(state.mode);
-        const desc =
-          info?.paywalled
-            ? '没读到本站答案（需要会员），AI 会用自己的知识回答。'
-            : mode.id === 'memorize'
-              ? 'AI 会用最短的话把这题讲明白，<br>再给你一个记得住的类比。'
-              : mode.id === 'quiz'
-                ? 'AI 出题考你，选择题可以直接点选项。'
-                : '选一个模式开始复习。';
+        // 题目已经写在上面的题目条里了，这里不再重复一遍，改成说清楚这个模式会做什么
+        const desc = mode.hint || '选一个模式开始复习。';
+        const descEl = NS.h('div', { class: 'msy-empty-desc', text: desc });
+        if (info?.paywalled && !info?.answer) {
+          descEl.append(NS.h('div', { class: 'msy-empty-note', text: '没读到本站答案（需要会员），AI 会用自己的知识回答。' }));
+        }
 
         const box = NS.h('div', { class: 'msy-empty' }, [
           NS.h('div', { class: 'msy-empty-icon' }, [icon(mode.icon)]),
-          NS.h('div', { class: 'msy-empty-title', text: info?.title || '准备就绪' }),
-          NS.h('div', { class: 'msy-empty-desc', html: desc }),
+          NS.h('div', { class: 'msy-empty-title', text: mode.label }),
+          descEl,
         ]);
 
         // 面试类模式下让人挑个面试官 —— 换个语气，复习体感完全不一样。
@@ -1337,7 +1481,7 @@
             NS.h('i', {
               style: `left:${Math.round((i / 17) * 100)}%;` +
                 `animation-delay:${(i % 6) * 0.12}s;` +
-                `background:${['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'][i % 5]}`,
+                `background:${['#4f46e5', '#7c5cf0', '#059669', '#f59e0b', '#ef4444'][i % 5]}`,
             })
           );
         }
@@ -1450,8 +1594,8 @@
                 onclick: async (e) => {
                   const btn = e.currentTarget;
                   const ok = await NS.copyText(text);
-                  btn.querySelector('span').textContent = ok ? '已复制' : '复制失败';
-                  setTimeout(() => (btn.querySelector('span').textContent = '复制'), 1400);
+                  labelOf(btn).textContent = ok ? '已复制' : '复制失败';
+                  setTimeout(() => (labelOf(btn).textContent = '复制'), 1400);
                 },
               }, [icon('copy'), NS.h('span', { text: '复制' })]),
               NS.h('button', {
@@ -1532,7 +1676,7 @@
         voiceBtn.title = on
           ? '语音对话中：AI 念完会自动开始听你说。点击关闭'
           : '开启后 AI 念完会自动开始听你说，说完自动发送、自动念新回复（模拟面试和费曼最常用）';
-        voiceBtn.querySelector('span').textContent = on ? '语音对话中' : '语音对话';
+        labelOf(voiceBtn).textContent = on ? '语音对话中' : '语音对话';
       },
 
       /** 语音引擎的提示语（比如「说完停顿约 1.5 秒自动结束」），用在输入框提示里 */
@@ -1579,10 +1723,35 @@
     foldBtn.addEventListener('click', () => emit('toggleCollapse', true));
     gearBtn.addEventListener('click', () => emit('openOptions'));
     profileChip.addEventListener('click', () => emit('openOptions'));
+    profileChip.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        emit('openOptions');
+      }
+    });
     qRefresh.addEventListener('click', () => emit('refreshQuestion'));
     stopBtn.addEventListener('click', () => emit('stop'));
     saveBtn.addEventListener('click', () => emit('saveNote'));
-    clearBtn.addEventListener('click', () => emit('clear'));
+    // 清空会把这道题这个模式的对话整个抹掉，点错了没法撤回，所以要点两下：
+    // 第一下变成「再点一次确认」，3 秒内不点就自己复原
+    let clearConfirmT = null;
+    const resetClearConfirm = () => {
+      clearTimeout(clearConfirmT);
+      clearBtn.dataset.confirm = '0';
+      labelOf(clearBtn).textContent = '清空';
+    };
+    clearBtn.addEventListener('click', () => {
+      if (clearBtn.dataset.confirm !== '1') {
+        clearBtn.dataset.confirm = '1';
+        labelOf(clearBtn).textContent = '再点一次确认';
+        clearTimeout(clearConfirmT);
+        clearConfirmT = setTimeout(resetClearConfirm, 3000);
+        return;
+      }
+      resetClearConfirm();
+      emit('clear');
+    });
+    clearBtn.addEventListener('blur', resetClearConfirm);
     ttsToggle.addEventListener('change', () => emit('ttsChange', ttsToggle.checked));
     voiceBtn.addEventListener('click', () => emit('toggleVoice'));
 

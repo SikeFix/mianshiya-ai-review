@@ -5,22 +5,43 @@
     <title>面试鸭 AI 复习助手</title>
     <style>
       :root {
-        --border: #e4e6eb;
-        --text: #1f2328;
-        --dim: #6b7280;
-        --primary: #6366f1;
-        --bg: #f7f8fa;
-        --ok: #10b981;
-        --warn: #f59e0b;
+        color-scheme: light;
+        --border: #e2e7ef;
+        --text: #111827;
+        --dim: #566070;
+        --primary: #4f46e5;
+        --primary-fg: #ffffff;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --hover: #f1f4f8;
+        --ok: #059669;
+        --warn: #d97706;
+        --head-bg: linear-gradient(135deg, #4f46e5 0%, #6152ea 55%, #7c5cf0 100%);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --border: #2b313c;
+          --text: #e8eaf0;
+          --dim: #a3aab7;
+          --primary: #8b90f9;
+          --primary-fg: #10112a;
+          --bg: #1e222b;
+          --card: #171a21;
+          --hover: #262b35;
+          --ok: #34d399;
+          --warn: #fbbf24;
+          --head-bg: linear-gradient(135deg, #3f39c4 0%, #4f43cf 55%, #6447d6 100%);
+        }
       }
       * { box-sizing: border-box; }
       body {
         width: 310px; margin: 0; padding: 0;
         font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
-        font-size: 13px; color: var(--text); background: #fff;
+        font-size: 13px; color: var(--text); background: var(--card);
       }
       .head {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        background: var(--head-bg);
         color: #fff; padding: 12px 14px;
         display: flex; align-items: center; gap: 10px;
       }
@@ -58,12 +79,13 @@
       .check .txt .b { font-size: 11px; color: var(--dim); }
       .actions { display: flex; gap: 8px; margin-top: 12px; }
       button {
-        flex: 1; border: 1px solid var(--border); background: #fff; color: var(--text);
+        flex: 1; border: 1px solid var(--border); background: var(--card); color: var(--text);
         padding: 8px 10px; border-radius: 8px;
         font-family: inherit; font-size: 12.5px; cursor: pointer; transition: all .15s;
       }
-      button:hover { background: var(--bg); }
-      button.primary { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 500; }
+      button:hover { background: var(--hover); }
+      button:focus-visible, select:focus-visible, .check:focus-within { outline: 2px solid var(--primary); outline-offset: 2px; }
+      button.primary { background: var(--primary); border-color: var(--primary); color: var(--primary-fg); font-weight: 500; }
       button.primary:hover { filter: brightness(1.08); }
       button:disabled { opacity: .45; cursor: not-allowed; }
       .foot {
