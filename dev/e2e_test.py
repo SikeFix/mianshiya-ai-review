@@ -218,6 +218,8 @@ async def clear_conversation(page):
     await wait_idle(page)
     btn = page.locator("#msy-ai-host .msy-foot-bar button").last
     if await btn.is_enabled():
+        # 清空要点两下确认（防手滑），第一下只是变成「再点一次确认」
+        await btn.click()
         await btn.click()
         await page.wait_for_timeout(700)
     else:
@@ -761,6 +763,75 @@ async def main():
         shot = os.path.join(ROOT, "docs", "panel.png")
         await page.locator("#msy-ai-host .msy-panel").screenshot(path=shot)
         check("面板截图已保存", os.path.exists(shot))
+
+        # ================= 13.5 界面体验 =================
+        stage("13.5 界面体验")
+        check("开始之后空状态卡片收掉了",
+              await page.locator("#msy-ai-host .msy-empty").count() == 0)
+        check("模式条右侧有「还有更多」的渐隐提示",
+              (await page.locator("#msy-ai-host .msy-modes-wrap").get_attribute("data-more-right")) == "1")
+        await page.locator('#msy-ai-host .msy-mode[data-mode="chat"]').click()
+        await page.wait_for_timeout(500)
+        vis = await page.evaluate(
+            """() => {
+                const sr = document.getElementById('msy-ai-host').shadowRoot;
+                const bar = sr.querySelector('.msy-modes').getBoundingClientRect();
+                const b = sr.querySelector('.msy-mode[data-mode="chat"]').getBoundingClientRect();
+                return b.left >= bar.left - 1 && b.right <= bar.right + 1;
+            }"""
+        )
+        check("选中最右边的模式会自动滚进可视区", vis)
+        await page.locator('#msy-ai-host .msy-mode[data-mode="interview"]').click()
+        await page.wait_for_timeout(300)
+
+        rows_before = await page.locator("#msy-ai-host .msy-row").count()
+        clear_btn = page.locator("#msy-ai-host .msy-foot-bar .msy-clear")
+        await clear_btn.click()
+        await page.wait_for_timeout(200)
+        check("「清空」点一下只是要求确认，对话还在",
+              await page.locator("#msy-ai-host .msy-row").count() == rows_before
+              and "确认" in (await clear_btn.inner_text()),
+              await clear_btn.inner_text())
+        await page.locator("#msy-ai-host .msy-input").focus()
+        await page.wait_for_timeout(200)
+        check("失焦后「清空」复原", (await clear_btn.inner_text()).strip() == "清空")
+
+        foot_wrap = await page.evaluate(
+            """() => {
+                const sr = document.getElementById('msy-ai-host').shadowRoot;
+                return [...sr.querySelectorAll('.msy-foot-bar button, .msy-foot-bar label')]
+                    .filter(b => b.offsetParent)
+                    .every(b => b.getBoundingClientRect().height < 30);
+            }"""
+        )
+        check("底栏按钮文字没有被挤成竖排", foot_wrap)
+        voice_btn = await page.evaluate(
+            """() => {
+                const b = document.getElementById('msy-ai-host').shadowRoot.querySelector('.msy-voice-toggle');
+                return { svg: b.querySelectorAll('svg').length, text: b.innerText.trim() };
+            }"""
+        )
+        check("「语音对话」按钮图标还在、文字只出现一次",
+              voice_btn["svg"] == 1 and voice_btn["text"] in ("语音对话", "语音对话中"), str(voice_btn))
+
+        await sw.evaluate(
+            """async () => {
+                const { msy_settings } = await chrome.storage.local.get('msy_settings');
+                msy_settings.ui.position = { right: 22, bottom: 5000 };
+                await chrome.storage.local.set({ msy_settings });
+            }"""
+        )
+        await page.wait_for_timeout(500)
+        box = await page.locator("#msy-ai-host .msy-panel").bounding_box()
+        check("锚点存得再离谱，面板也完整留在屏幕里", box is not None and box["y"] >= 0, str(box))
+        await sw.evaluate(
+            """async () => {
+                const { msy_settings } = await chrome.storage.local.get('msy_settings');
+                msy_settings.ui.position = null;
+                await chrome.storage.local.set({ msy_settings });
+            }"""
+        )
+        await page.wait_for_timeout(300)
         check("页面没有 JS 报错", not errs, "; ".join(errs[:3]))
 
         # ================= 14. 设置页 =================
