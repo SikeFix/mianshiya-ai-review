@@ -337,10 +337,10 @@
   const KIND_LABEL = { tag: '标签', keyword: '关键词', bank: '题库', custom: '我的分类' };
 
   const STATE_COLOR = {
-    again: '#ef4444',
-    hard: '#f59e0b',
-    good: '#10b981',
-    easy: '#4f46e5',
+    again: '#d4380d',
+    hard: '#d99a1e',
+    good: '#2f7d32',
+    easy: '#0f766e',
     new: '#9aa1ad',
   };
 
@@ -418,12 +418,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${esc(title)} · ${stamp}</title>
 <style>
-  :root { --bg:#f6f7f9; --card:#fff; --border:#e4e6eb; --text:#1a1d23; --dim:#6b7280; --faint:#9aa1ad; }
+  :root { --bg:#f5f5f3; --card:#fff; --border:#e7e5e2; --text:#1c1a17; --dim:#5c5751; --faint:#8f8982; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--text); line-height:1.7;
          font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Roboto,sans-serif; }
   .wrap { max-width:1000px; margin:0 auto; padding:28px 22px 70px; }
-  header { background:linear-gradient(135deg,#4f46e5,#7c5cf0); color:#fff; padding:26px 0 22px; margin-bottom:22px; }
+  header { background:#0f766e; color:#fff; padding:26px 0 22px; margin-bottom:22px; }
   header .wrap { padding-top:0; padding-bottom:0; }
   h1 { margin:0; font-size:21px; font-weight:600; }
   header p { margin:5px 0 0; font-size:13px; opacity:.9; }
@@ -444,7 +444,7 @@
   tr.is-weak { box-shadow:inset 3px 0 0 var(--danger); }
   tr.is-weak td:first-child { font-weight:600; }
   td.dim { color:var(--faint); font-size:12px; }
-  a { color:#4f46e5; text-decoration:none; }
+  a { color:#0f766e; text-decoration:none; }
   a:hover { text-decoration:underline; }
   .bar { display:flex; height:8px; border-radius:4px; overflow:hidden; background:var(--border); }
   .bar span { display:block; height:100%; }
@@ -458,7 +458,7 @@
   .dcol { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%; }
   .dnum { font-size:10.5px; color:var(--faint); height:14px; }
   .dbar { width:100%; min-height:2px; border-radius:4px 4px 0 0;
-          background:linear-gradient(180deg,#818cf8,#4f46e5); }
+          background:#0f766e; }
   .daxis { display:flex; gap:4px; margin-top:4px; }
   .daxis span { flex:1; text-align:center; font-size:10px; color:var(--faint); }
   footer { text-align:center; color:var(--faint); font-size:12px; margin-top:26px; }
@@ -481,11 +481,11 @@
   .mtree summary:hover { background:var(--bg); }
   .mtree .mleaf { font-size:13px; padding:2px 0 2px 16px; }
   .mtree .mleaf a { color:var(--text); }
-  .mtree .mleaf a:hover { color:#4f46e5; }
+  .mtree .mleaf a:hover { color:#0f766e; }
   .mtree .mmeta { color:var(--faint); font-size:11.5px; margin-left:7px; }
-  .mtree .mleaf[data-state="again"] a { color:#ef4444; }
-  .mtree .mleaf[data-state="hard"] a { color:#f59e0b; }
-  .mtree .mleaf[data-state="good"] a, .mtree .mleaf[data-state="easy"] a { color:#10b981; }
+  .mtree .mleaf[data-state="again"] a { color:#d4380d; }
+  .mtree .mleaf[data-state="hard"] a { color:#b45309; }
+  .mtree .mleaf[data-state="good"] a, .mtree .mleaf[data-state="easy"] a { color:#2f7d32; }
 </style>
 </head>
 <body>

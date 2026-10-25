@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""生成扩展图标（16/32/48/128）。设计：靛蓝→紫罗兰渐变圆角方块 + 白色对话气泡 + AI 字样。"""
+"""生成扩展图标（16/32/48/128）。设计：青绿纯色圆角方块 + 白色对话气泡 + AI 字样 + 右上角鸭子黄小点。"""
 from PIL import Image, ImageDraw, ImageFont
 import os
 
@@ -32,7 +32,7 @@ def draw_icon(size):
     # --- 渐变底 ---
     grad = Image.new("RGBA", (S, S))
     gd = grad.load()
-    c1, c2 = (99, 102, 241), (139, 92, 246)  # indigo-500 -> violet-500
+    c1, c2 = (17, 133, 123), (15, 118, 110)  # 很轻的同色渐变，只为让方块有一点体积感
     for y in range(S):
         for x in range(S):
             t = (x + y) / (2 * (S - 1)) if S > 1 else 0
@@ -70,8 +70,14 @@ def draw_icon(size):
         ((bx0 + bx1) / 2 - tw / 2 - tb[0], (by0 + by1) / 2 - th / 2 - tb[1]),
         text,
         font=f,
-        fill=(79, 70, 229, 255),
+        fill=(15, 118, 110, 255),
     )
+
+    # --- 鸭子黄小点 ---
+    r = S * 0.11
+    cx, cy = S - S * 0.17, S * 0.17
+    d.ellipse([cx - r * 1.35, cy - r * 1.35, cx + r * 1.35, cy + r * 1.35], fill=(15, 118, 110, 255))
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(245, 179, 1, 255))
 
     return img.resize((size, size), Image.LANCZOS)
 

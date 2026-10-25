@@ -6,32 +6,34 @@
     <style>
       :root {
         color-scheme: light;
-        --border: #e2e7ef;
-        --text: #111827;
-        --dim: #566070;
-        --primary: #4f46e5;
-        --btn-grad: linear-gradient(140deg, #4f46e5, #7c5cf0);
+        --border: #e7e5e2;
+        --text: #1c1a17;
+        --dim: #5c5751;
+        --primary: #0f766e;
+        --primary-hover: #115e59;
         --primary-fg: #ffffff;
-        --bg: #f8fafc;
+        --primary-soft: #eaf5f3;
+        --bg: #fafaf9;
         --card: #ffffff;
-        --hover: #f1f4f8;
-        --ok: #059669;
-        --warn: #d97706;
+        --hover: #f2f1ee;
+        --ok: #2f7d32;
+        --warn: #b45309;
       }
       @media (prefers-color-scheme: dark) {
         :root {
           color-scheme: dark;
-          --border: #2b313c;
-          --text: #e8eaf0;
-          --dim: #a3aab7;
-          --primary: #8b90f9;
-          --btn-grad: linear-gradient(140deg, #5b55e8, #7c5cf0);
-          --primary-fg: #10112a;
-          --bg: #1e222b;
-          --card: #171a21;
-          --hover: #262b35;
-          --ok: #34d399;
-          --warn: #fbbf24;
+          --border: #353330;
+          --text: #f1efeb;
+          --dim: #b8b2aa;
+          --primary: #3cc7b5;
+          --primary-hover: #5fd6c6;
+          --primary-fg: #06221f;
+          --primary-soft: #16302d;
+          --bg: #242320;
+          --card: #1d1c1a;
+          --hover: #2e2c29;
+          --ok: #7cc47f;
+          --warn: #e8b04b;
         }
       }
       * { box-sizing: border-box; }
@@ -41,28 +43,18 @@
         font-size: 13px; color: var(--text); background: var(--card);
       }
       .head {
-        position: relative;
         background: var(--card); color: var(--text);
-        padding: 15px 14px 12px;
+        padding: 14px 14px 12px;
         display: flex; align-items: center; gap: 10px;
         border-bottom: 1px solid var(--border);
       }
-      .head::before {
-        content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px;
-        background: linear-gradient(90deg, var(--primary), #7c5cf0, #ec6fb4);
-      }
-      .head img { width: 30px; height: 30px; border-radius: 9px; box-shadow: 0 3px 10px rgba(79, 70, 229, .3); }
-      .head .t { font-weight: 700; font-size: 13.5px; }
+      .head img { width: 30px; height: 30px; border-radius: 8px; }
+      .head .t { font-weight: 650; font-size: 13.5px; }
       .head .s { font-size: 11.5px; color: var(--dim); }
       .body { padding: 12px 14px 14px; }
       .qbox {
-        position: relative; overflow: hidden;
-        background: var(--bg); border: 1px solid var(--border); border-radius: 11px;
-        padding: 9px 11px 9px 13px; margin-bottom: 12px;
-      }
-      .qbox::before {
-        content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-        background: linear-gradient(180deg, var(--primary), #7c5cf0);
+        background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+        padding: 9px 11px; margin-bottom: 12px;
       }
       .qbox .qt {
         font-weight: 600; font-size: 12.5px; line-height: 1.5;
@@ -88,19 +80,20 @@
       .check .txt { flex: 1; }
       .check .txt .a { font-size: 12.5px; font-weight: 500; }
       .check .txt .b { font-size: 11px; color: var(--dim); }
-      .actions { display: flex; gap: 8px; margin-top: 12px; }
+      .actions { display: flex; gap: 8px; margin-top: 10px; }
+      .actions + .actions { margin-top: 8px; }
       button {
         flex: 1; border: 1px solid var(--border); background: var(--card); color: var(--text);
         padding: 8px 10px; border-radius: 9px;
-        font-family: inherit; font-size: 12.5px; cursor: pointer; transition: all .15s;
+        font-family: inherit; font-size: 12.5px; cursor: pointer; transition: background .15s, border-color .15s;
       }
       button:hover { background: var(--hover); }
       button:focus-visible, select:focus-visible, .check:focus-within { outline: 2px solid var(--primary); outline-offset: 2px; }
       button.primary {
-        background: var(--btn-grad); border-color: transparent;
-        color: #fff; font-weight: 600; box-shadow: 0 3px 10px rgba(79, 70, 229, .28);
+        background: var(--primary); border-color: transparent;
+        color: var(--primary-fg); font-weight: 600;
       }
-      button.primary:hover { filter: brightness(1.08); }
+      button.primary:hover { background: var(--primary-hover); }
       button:disabled { opacity: .45; cursor: not-allowed; }
       .foot {
         border-top: 1px solid var(--border); padding: 9px 14px;

@@ -493,7 +493,7 @@ async def main():
         check("包含建议", "该怎么做" in html)
         check("包含题目链接", "mianshiya.com/question/1" in html)
         check("显示 AI 评分", "6/10" in html)
-        check("按掌握状态着色", "#ef4444" in html or "#10b981" in html)
+        check("按掌握状态着色", "#d4380d" in html or "#2f7d32" in html)
         # 空数据也不能崩
         emptyHtml = await page.evaluate(
             "() => MSY.report.toHtml(MSY.report.aggregate([]))"
