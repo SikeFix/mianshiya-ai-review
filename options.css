@@ -1,60 +1,64 @@
 :root {
   color-scheme: light;
   /* 和页面里的面板用同一套配色（content/ui.js），两边看着是一个产品 */
-  --bg: #f5f7fb;
+  --bg: #f5f5f3;
   --card: #ffffff;
-  --input: #f8fafc;
-  --border: #e2e7ef;
-  --border-hover: #c6cfdb;
-  --row-hover: #f8fafc;
-  --text: #111827;
-  --dim: #566070;
-  --primary: #4f46e5;
-  --btn-grad: linear-gradient(140deg, #4f46e5, #7c5cf0);
+  --input: #fafaf9;
+  --border: #e7e5e2;
+  --border-hover: #d0ccc7;
+  --row-hover: #fafaf9;
+  --text: #1c1a17;
+  --dim: #5c5751;
+  --faint: #8f8982;
+  --primary: #0f766e;
+  --primary-hover: #115e59;
   --primary-fg: #ffffff;
-  --primary-soft: #eef0ff;
-  --primary-rgb: 79, 70, 229;
-  --ok: #059669;
-  --warn: #d97706;
-  --danger: #dc2626;
-  --danger-soft: #fef2f2;
-  --danger-border: #fecaca;
-  --code-bg: rgba(15, 23, 42, .06);
+  --primary-soft: #eaf5f3;
+  --primary-rgb: 15, 118, 110;
+  --accent: #f5b301;
+  --ok: #2f7d32;
+  --warn: #b45309;
+  --danger: #d4380d;
+  --danger-soft: #fdf1ec;
+  --danger-border: #f5c9b8;
+  --code-bg: rgba(28, 26, 23, .06);
   --note-info-bg: #f0f9ff; --note-info-bd: #bae6fd; --note-info-fg: #0c4a6e;
   --note-warn-bg: #fffbeb; --note-warn-bd: #fde68a; --note-warn-fg: #78350f;
   --note-ok-bg: #f0fdf4;   --note-ok-bd: #bbf7d0;   --note-ok-fg: #14532d;
   --note-err-bg: #fef2f2;  --note-err-bd: #fecaca;  --note-err-fg: #7f1d1d;
-  --toast-bg: #111827; --toast-fg: #ffffff;
+  --toast-bg: #1c1a17; --toast-fg: #ffffff;
   --radius: 14px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #111318;
-    --card: #181b22;
-    --input: #1e222b;
-    --border: #2b313c;
-    --border-hover: #3f4655;
-    --row-hover: #1e222b;
-    --text: #e8eaf0;
-    --dim: #a3aab7;
-    --primary: #8b90f9;
-    --btn-grad: linear-gradient(140deg, #5b55e8, #7c5cf0);
-    --primary-fg: #10112a;
-    --primary-soft: #262a4d;
-    --primary-rgb: 139, 144, 249;
-    --ok: #34d399;
-    --warn: #fbbf24;
-    --danger: #f87171;
-    --danger-soft: #3a1d22;
-    --danger-border: #6b2a31;
+    --bg: #161513;
+    --card: #1d1c1a;
+    --input: #242320;
+    --border: #353330;
+    --border-hover: #4a4743;
+    --row-hover: #242320;
+    --text: #f1efeb;
+    --dim: #b8b2aa;
+    --faint: #87817a;
+    --primary: #3cc7b5;
+    --primary-hover: #5fd6c6;
+    --primary-fg: #06221f;
+    --primary-soft: #16302d;
+    --primary-rgb: 60, 199, 181;
+    --accent: #f5c542;
+    --ok: #7cc47f;
+    --warn: #e8b04b;
+    --danger: #f08a6c;
+    --danger-soft: #3a211a;
+    --danger-border: #6b3324;
     --code-bg: rgba(255, 255, 255, .08);
     --note-info-bg: #0f2433; --note-info-bd: #1e4a66; --note-info-fg: #bae6fd;
     --note-warn-bg: #2e240c; --note-warn-bd: #5c4614; --note-warn-fg: #fde68a;
     --note-ok-bg: #0f2a1d;   --note-ok-bd: #1d5236;   --note-ok-fg: #bbf7d0;
     --note-err-bg: #2f1518;  --note-err-bd: #5f252b;  --note-err-fg: #fecaca;
-    --toast-bg: #e8eaf0; --toast-fg: #111318;
+    --toast-bg: #f1efeb; --toast-fg: #161513;
   }
 }
 
@@ -74,8 +78,7 @@ body {
 .wrap { max-width: 1000px; margin: 0 auto; padding: 0 22px 70px; }
 
 /* ---------------- 头部 ----------------
-   以前是一整块 160px 高的渐变色带，内容只占上面一半。改成吸顶的紧凑顶栏，
-   跟页面里的面板一个样子：同色底 + 顶部一条彩带 + 渐变 logo。 */
+   吸顶的紧凑顶栏，跟页面里的面板一个样子：同色底 + 纯色 logo，不用渐变和彩带。 */
 .top {
   position: sticky; top: 0; z-index: 20;
   background: color-mix(in srgb, var(--card) 86%, transparent);
@@ -85,17 +88,12 @@ body {
   padding: 13px 0 12px;
   margin-bottom: 20px;
 }
-.top::before {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px;
-  background: linear-gradient(90deg, var(--primary), #7c5cf0, #ec6fb4);
-}
 .top .wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-bottom: 0; }
 .brand { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 260px; }
 .brand img {
-  width: 38px; height: 38px; border-radius: 11px;
-  box-shadow: 0 4px 12px rgba(var(--primary-rgb), .3);
+  width: 36px; height: 36px; border-radius: 10px;
 }
-.brand h1 { margin: 0; font-size: 16.5px; font-weight: 700; letter-spacing: .2px; }
+.brand h1 { margin: 0; font-size: 16px; font-weight: 650; letter-spacing: .2px; }
 .brand p { margin: 0; font-size: 12.5px; color: var(--dim); }
 .top-actions { display: flex; gap: 8px; }
 .top-actions button {
@@ -112,9 +110,9 @@ body {
 .tabs {
   position: sticky; top: 84px; z-index: 10;
   display: flex; gap: 2px; margin-bottom: 18px;
-  background: var(--input); padding: 4px;
-  border-radius: 13px; border: 1px solid var(--border);
-  box-shadow: 0 6px 18px -12px rgba(15, 23, 42, .25);
+  background: var(--card); padding: 4px;
+  border-radius: 12px; border: 1px solid var(--border);
+  box-shadow: 0 6px 18px -14px rgba(28, 26, 23, .3);
   overflow-x: auto; scrollbar-width: none;
 }
 .tabs::-webkit-scrollbar { display: none; }
@@ -125,10 +123,10 @@ body {
   font-size: 13.5px; font-family: inherit; font-weight: 500;
   cursor: pointer; white-space: nowrap; transition: all .15s;
 }
-.tabs button:hover { color: var(--text); background: rgba(var(--primary-rgb), .06); }
+.tabs button:hover { color: var(--text); background: var(--row-hover); }
 .tabs button.active {
-  background: var(--card); border-color: var(--border); color: var(--primary); font-weight: 650;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, .08), 0 2px 8px rgba(var(--primary-rgb), .14);
+  background: var(--primary-soft); border-color: rgba(var(--primary-rgb), .2);
+  color: var(--primary); font-weight: 600;
 }
 
 /* ---------------- 卡片 ---------------- */
@@ -138,15 +136,17 @@ body {
 .card {
   background: var(--card); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 20px 22px; margin-bottom: 16px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 16px -8px rgba(15, 23, 42, .08);
+  box-shadow: 0 1px 2px rgba(28, 26, 23, .04);
 }
 .panel.active { animation: fade-in .2s ease-out; }
 @keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .card > h2 {
   margin: 0 0 4px; font-size: 15px; font-weight: 600;
   display: flex; align-items: center; gap: 7px;
-  padding-left: 10px; border-left: 3px solid; border-image: linear-gradient(180deg, var(--primary), #7c5cf0) 1;
   line-height: 1.35;
+}
+.card > h2::before {
+  content: ""; width: 4px; height: 15px; border-radius: 2px; background: var(--primary); flex: none;
 }
 .card > h2 .tip { font-size: 12px; font-weight: 400; color: var(--dim); }
 .card > .sub { margin: 0 0 15px; font-size: 12.5px; color: var(--dim); }
@@ -214,11 +214,10 @@ button.btn {
 }
 button.btn:hover { background: var(--row-hover); border-color: var(--border-hover); }
 button.btn.primary {
-  background: var(--btn-grad); border-color: transparent;
-  color: #fff; font-weight: 600;
-  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .28);
+  background: var(--primary); border-color: transparent;
+  color: var(--primary-fg); font-weight: 600;
 }
-button.btn.primary:hover { filter: brightness(1.08); }
+button.btn.primary:hover { background: var(--primary-hover); }
 button.btn.danger { color: var(--danger); }
 button.btn.danger:hover { background: var(--danger-soft); border-color: var(--danger-border); }
 button.btn:disabled { opacity: .5; cursor: not-allowed; }
@@ -239,6 +238,8 @@ button.btn:disabled { opacity: .5; cursor: not-allowed; }
 .pitem:hover { border-color: var(--border-hover); }
 .pitem.active { border-color: var(--primary); background: var(--primary-soft); }
 .pitem .info { flex: 1; min-width: 0; }
+/* nm / md 是 span，不设 block 的话省略号不生效，长模型名会冲出卡片 */
+.pitem .nm, .pitem .md { display: block; }
 .pitem .nm { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pitem .md { font-size: 11px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pitem .dot {
@@ -411,7 +412,7 @@ kbd {
 .rpt-cnum { font-size: 10.5px; color: var(--dim); height: 14px; }
 .rpt-cbar {
   width: 100%; min-height: 2px; border-radius: 4px 4px 0 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 70%, #fff), var(--primary));
+  background: var(--primary);
 }
 .rpt-axis { display: flex; gap: 4px; margin-top: 4px; }
 .rpt-axis span { flex: 1; text-align: center; font-size: 10px; color: var(--dim); }

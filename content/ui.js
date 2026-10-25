@@ -19,35 +19,35 @@
 
 .msy-root {
   /* ---- 浅色 ----
-     主色从 #6366f1 压深到 #4f46e5：白字在旧主色上对比度只有 4.4，不到 WCAG AA；
-     中性色换成偏冷的 slate 系，和靛蓝主色更搭；警告/成功色也压深一档，
-     「完整答案需会员」这种小字以前在白底上几乎看不清。 */
+     暖灰中性色 + 单一的青绿主色，全部纯色不用渐变：以前的靛蓝→紫渐变加彩虹条
+     太「通用 AI 产品」，信息一多就显得花。鸭子黄只作点缀（logo 上的小点）。
+     主色 teal-700 上白字对比度 5.5，过 WCAG AA。 */
   --bg: #ffffff;
-  --bg-soft: #f8fafc;
-  --bg-sunken: #f3f5f9;
-  --bg-hover: #edf0f5;
-  --border: #e2e7ef;
-  --border-strong: #cdd5e0;
-  --text: #111827;
-  --text-dim: #566070;
-  --text-faint: #8a93a3;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
+  --bg-soft: #fafaf9;
+  --bg-sunken: #f5f5f3;
+  --bg-hover: #efeeeb;
+  --border: #e7e5e2;
+  --border-strong: #d6d3cf;
+  --text: #1c1a17;
+  --text-dim: #5c5751;
+  --text-faint: #8f8982;
+  --primary: #0f766e;
+  --primary-hover: #115e59;
   --primary-fg: #ffffff;
-  --primary-soft: #eef0ff;
-  --primary-rgb: 79, 70, 229;
-  --accent: #7c5cf0;
-  --danger: #dc2626;
-  --danger-soft: #fef2f2;
-  --danger-rgb: 220, 38, 38;
-  --ok: #059669;
-  --ok-soft: #ecfdf5;
-  --warn: #d97706;
-  --warn-soft: #fffbeb;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .07);
-  --shadow-lg: 0 18px 50px rgba(15, 23, 42, .18), 0 2px 8px rgba(15, 23, 42, .08);
-  --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgba(var(--primary-rgb), .55);
-  --radius: 18px;
+  --primary-soft: #eaf5f3;
+  --primary-rgb: 15, 118, 110;
+  --accent: #f5b301;
+  --danger: #d4380d;
+  --danger-soft: #fdf1ec;
+  --danger-rgb: 212, 56, 13;
+  --ok: #2f7d32;
+  --ok-soft: #eef6ee;
+  --warn: #b45309;
+  --warn-soft: #fdf6e7;
+  --shadow-sm: 0 1px 2px rgba(28, 26, 23, .05);
+  --shadow-lg: 0 24px 60px -12px rgba(28, 26, 23, .22), 0 2px 6px rgba(28, 26, 23, .06);
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgba(var(--primary-rgb), .5);
+  --radius: 16px;
 
   position: fixed;
   z-index: ${Z};
@@ -65,30 +65,30 @@
 }
 
 .msy-root[data-theme="dark"] {
-  --bg: #171a21;
-  --bg-soft: #1e222b;
-  --bg-sunken: #13151b;
-  --bg-hover: #282d38;
-  --border: #2b313c;
-  --border-strong: #3b4250;
-  --text: #e8eaf0;
-  --text-dim: #a3aab7;
-  --text-faint: #7d8594;
-  --primary: #8b90f9;
-  --primary-hover: #a1a5fb;
-  --primary-fg: #10112a;
-  --primary-soft: #262a4d;
-  --primary-rgb: 139, 144, 249;
-  --accent: #a78bfa;
-  --danger: #f87171;
-  --danger-soft: #3a1d22;
-  --danger-rgb: 248, 113, 113;
-  --ok: #34d399;
-  --ok-soft: #12302a;
-  --warn: #fbbf24;
+  --bg: #1d1c1a;
+  --bg-soft: #242320;
+  --bg-sunken: #181715;
+  --bg-hover: #2e2c29;
+  --border: #353330;
+  --border-strong: #4a4743;
+  --text: #f1efeb;
+  --text-dim: #b8b2aa;
+  --text-faint: #87817a;
+  --primary: #3cc7b5;
+  --primary-hover: #5fd6c6;
+  --primary-fg: #06221f;
+  --primary-soft: #16302d;
+  --primary-rgb: 60, 199, 181;
+  --accent: #f5c542;
+  --danger: #f08a6c;
+  --danger-soft: #3a211a;
+  --danger-rgb: 240, 138, 108;
+  --ok: #7cc47f;
+  --ok-soft: #1c2e1d;
+  --warn: #e8b04b;
   --warn-soft: #33290f;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
-  --shadow-lg: 0 18px 50px rgba(0, 0, 0, .6), 0 2px 8px rgba(0, 0, 0, .4);
+  --shadow-lg: 0 24px 60px -12px rgba(0, 0, 0, .7), 0 2px 8px rgba(0, 0, 0, .4);
 }
 
 /* ---------------- 图标 ---------------- */
@@ -98,25 +98,23 @@
 /* ---------------- 悬浮球 ---------------- */
 .msy-fab {
   position: fixed;
-  width: 54px; height: 54px;
-  border-radius: 18px;
+  width: 52px; height: 52px;
+  border-radius: 50%;
   border: none;
-  background: linear-gradient(140deg, var(--primary) 0%, var(--accent) 100%);
+  background: var(--primary);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(var(--primary-rgb), .42), 0 2px 6px rgba(15, 23, 42, .14),
-              inset 0 1px 0 rgba(255, 255, 255, .25);
+  box-shadow: 0 8px 22px rgba(var(--primary-rgb), .35), 0 2px 5px rgba(28, 26, 23, .12);
   display: flex; align-items: center; justify-content: center;
-  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, border-radius .22s ease;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s ease;
   touch-action: none;
   user-select: none;
   padding: 0;
 }
-.msy-fab .msy-i { width: 24px; height: 24px; }
+.msy-fab .msy-i { width: 23px; height: 23px; }
 .msy-fab:hover {
-  transform: translateY(-2px) scale(1.04); border-radius: 20px;
-  box-shadow: 0 14px 34px rgba(var(--primary-rgb), .52), 0 2px 6px rgba(15, 23, 42, .14),
-              inset 0 1px 0 rgba(255, 255, 255, .25);
+  transform: translateY(-2px); background: var(--primary-hover);
+  box-shadow: 0 12px 28px rgba(var(--primary-rgb), .42), 0 2px 5px rgba(28, 26, 23, .12);
 }
 .msy-fab:active { transform: scale(.95); }
 /* 悬停时在左边冒出一个小标签，第一次用的人知道这是什么 */
@@ -141,7 +139,7 @@
 .msy-fab .msy-fab-count[hidden] { display: none; }
 .msy-fab[data-busy="1"]::after {
   content: ""; position: absolute; inset: -5px;
-  border-radius: 22px; border: 2px solid rgba(var(--primary-rgb), .5);
+  border-radius: 50%; border: 2px solid rgba(var(--primary-rgb), .5);
   animation: msy-pulse 1.5s ease-out infinite;
 }
 @keyframes msy-pulse {
@@ -181,18 +179,20 @@
   position: absolute; top: 0; left: 0;
   width: 18px; height: 18px;
   cursor: nwse-resize; z-index: 3;
-  background: linear-gradient(135deg, var(--border-strong) 0 46%, transparent 46%);
+  /* 两道细斜线当拖拽把手，比一整块灰三角安静 */
+  background:
+    linear-gradient(135deg, transparent 5px, var(--border-strong) 5px 6.5px, transparent 6.5px 9px,
+                    var(--border-strong) 9px 10.5px, transparent 10.5px);
   border-top-left-radius: var(--radius);
   opacity: 0; transition: opacity .15s;
 }
-.msy-panel:hover .msy-resize { opacity: .9; }
+.msy-panel:hover .msy-resize { opacity: 1; }
 
 /* ---------------- 顶栏 ----------------
-   以前是一整条渐变色带，压得很重，和站点也抢眼。改成跟面板同色的干净顶栏，
-   品牌感只留给左边的渐变 logo 方块和顶部一条 2px 的彩带。 */
+   跟面板同色的干净顶栏，品牌感只留给左边的纯色 logo 和上面一个鸭子黄小点。 */
 .msy-head {
-  display: flex; align-items: center; gap: 6px;
-  padding: 12px 10px 10px 14px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 11px 8px 9px 14px;
   background: var(--bg);
   color: var(--text);
   cursor: move;
@@ -200,30 +200,32 @@
   flex: none;
   position: relative;
 }
-.msy-head::before {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent), #ec6fb4);
-}
 .msy-brand {
   display: flex; align-items: center; gap: 9px; min-width: 0;
   white-space: nowrap;
 }
 .msy-logo {
-  width: 28px; height: 28px; border-radius: 9px; flex: none;
+  width: 26px; height: 26px; border-radius: 8px; flex: none;
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(140deg, var(--primary), var(--accent));
+  background: var(--primary);
   color: #fff;
-  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .35), inset 0 1px 0 rgba(255, 255, 255, .25);
+  position: relative;
 }
-.msy-logo .msy-i { width: 16px; height: 16px; }
-.msy-brand-text { display: flex; align-items: center; font-weight: 700; font-size: 14px; letter-spacing: .2px; }
+.msy-logo::after {
+  content: ""; position: absolute; top: -2px; right: -2px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg);
+}
+.msy-logo .msy-i { width: 15px; height: 15px; }
+.msy-brand-text { display: flex; align-items: center; font-weight: 650; font-size: 14px; letter-spacing: .2px; }
 .msy-head .msy-spacer { flex: 1; }
 
 .msy-profile {
   display: inline-flex; align-items: center; gap: 6px;
-  font-size: 11.5px; font-weight: 500; padding: 4px 10px 4px 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 500; padding: 3px 10px 3px 8px; border-radius: 999px;
   background: var(--bg-soft); color: var(--text-dim);
   border: 1px solid var(--border);
+  margin-right: 2px;
   white-space: nowrap; max-width: 140px;
   cursor: pointer; transition: background .15s, border-color .15s, color .15s;
   position: relative; z-index: 1;
@@ -248,25 +250,23 @@
 .msy-icon-btn:hover { background: var(--bg-hover); color: var(--text); }
 
 /* ---------------- 模式条 ----------------
-   分段控件：一条凹槽里放所有模式，选中的那个浮起来。比一排独立描边按钮安静得多。 */
-.msy-modes-wrap { position: relative; flex: none; margin: 0 10px 8px; }
+   胶囊标签：未选中的只有文字，选中的填一层主色浅底。比凹槽分段控件轻，
+   七个模式排一行也不显得挤。 */
+.msy-modes-wrap { position: relative; flex: none; margin: 0 0 10px; }
 /* 模式按钮放不下时横向滚动；两侧的渐隐提示「那边还有」，
    否则「自测」「自由对话」藏在右边根本没人发现 */
 .msy-modes-wrap::before, .msy-modes-wrap::after {
-  content: ""; position: absolute; top: 1px; bottom: 1px; width: 30px;
+  content: ""; position: absolute; top: 0; bottom: 0; width: 34px;
   pointer-events: none; opacity: 0; transition: opacity .18s; z-index: 1;
 }
-.msy-modes-wrap::before { left: 1px; border-radius: 11px 0 0 11px; background: linear-gradient(90deg, var(--bg-sunken) 30%, transparent); }
-.msy-modes-wrap::after { right: 1px; border-radius: 0 11px 11px 0; background: linear-gradient(270deg, var(--bg-sunken) 30%, transparent); }
+.msy-modes-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg) 35%, transparent); }
+.msy-modes-wrap::after { right: 0; background: linear-gradient(270deg, var(--bg) 35%, transparent); }
 .msy-modes-wrap[data-more-left="1"]::before,
 .msy-modes-wrap[data-more-right="1"]::after { opacity: 1; }
 .msy-modes {
-  display: flex; gap: 2px;
-  padding: 3px;
+  display: flex; gap: 4px;
+  padding: 0 12px;
   overflow-x: auto; flex: none;
-  background: var(--bg-sunken);
-  border: 1px solid var(--border);
-  border-radius: 12px;
   scrollbar-width: none;
   scroll-behavior: smooth;
 }
@@ -274,29 +274,29 @@
 .msy-mode {
   flex: none;
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 6px 10px;
-  border-radius: 9px;
+  padding: 6px 11px;
+  border-radius: 999px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-dim);
   font-size: 12.5px; font-weight: 500; font-family: inherit; line-height: 1;
   cursor: pointer; white-space: nowrap;
-  transition: background .16s, color .16s, box-shadow .16s;
+  transition: background .16s, color .16s, border-color .16s;
 }
-.msy-mode .msy-i { width: 14px; height: 14px; opacity: .85; }
-.msy-mode:hover { color: var(--text); background: rgba(var(--primary-rgb), .06); }
+.msy-mode .msy-i { width: 14px; height: 14px; opacity: .8; }
+.msy-mode:hover { color: var(--text); background: var(--bg-hover); }
 .msy-mode[aria-pressed="true"] {
-  background: var(--bg); border-color: var(--border);
+  background: var(--primary-soft);
+  border-color: rgba(var(--primary-rgb), .22);
   color: var(--primary); font-weight: 600;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, .08), 0 2px 8px rgba(var(--primary-rgb), .14);
 }
 .msy-mode[aria-pressed="true"] .msy-i { opacity: 1; }
 
 /* ---------------- 题目条 ---------------- */
 .msy-scope {
   flex: none; display: flex; align-items: center; gap: 7px;
-  margin: 0 10px 8px; padding: 6px 10px; border-radius: 10px;
-  background: var(--primary-soft); border: 1px dashed rgba(var(--primary-rgb), .5);
+  margin: 0 12px 8px; padding: 6px 10px; border-radius: 10px;
+  background: var(--primary-soft); border: 1px dashed rgba(var(--primary-rgb), .45);
   font-size: 11.5px; color: var(--primary);
 }
 .msy-scope[hidden] { display: none !important; }
@@ -310,22 +310,17 @@
 
 .msy-qbar {
   flex: none;
-  margin: 0 10px 10px;
-  padding: 10px 11px 10px 13px;
+  margin: 0 12px 12px;
+  padding: 10px 10px 10px 12px;
   border-radius: 12px;
   background: var(--bg-soft);
   border: 1px solid var(--border);
   font-size: 12px;
   position: relative; overflow: hidden;
 }
-/* 左边一条主色竖线，一眼看出「这是当前题目」 */
-.msy-qbar::before {
-  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: linear-gradient(180deg, var(--primary), var(--accent));
-}
 .msy-qbar .msy-q-top { display: flex; align-items: flex-start; gap: 6px; }
 .msy-qbar .msy-q-name {
-  flex: 1; font-weight: 650; font-size: 13px; color: var(--text);
+  flex: 1; font-weight: 600; font-size: 13px; color: var(--text);
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden; word-break: break-word; line-height: 1.5;
 }
@@ -359,10 +354,8 @@
 .msy-msgs {
   flex: 1; min-height: 0;
   overflow-y: auto; overscroll-behavior: contain;
-  padding: 14px 12px 14px;
-  background:
-    radial-gradient(circle at 1px 1px, rgba(var(--primary-rgb), .07) 1px, transparent 0) 0 0 / 18px 18px,
-    var(--bg-sunken);
+  padding: 16px 12px 14px;
+  background: var(--bg-sunken);
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 }
@@ -379,33 +372,33 @@
 .msy-row.sys { justify-content: center; }
 @keyframes msy-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-/* AI 头像：和 logo 同一个渐变方块，对话一眼分得清谁是谁 */
+/* AI 头像：主色浅底 + 主色图标，比实心色块安静，对话照样一眼分得清谁是谁 */
 .msy-avatar {
-  flex: none; width: 26px; height: 26px; margin-top: 2px; border-radius: 9px;
+  flex: none; width: 26px; height: 26px; margin-top: 2px; border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(140deg, var(--primary), var(--accent)); color: #fff;
-  box-shadow: 0 2px 6px rgba(var(--primary-rgb), .3);
+  background: var(--primary-soft); color: var(--primary);
+  border: 1px solid rgba(var(--primary-rgb), .18);
 }
 .msy-avatar .msy-i { width: 14px; height: 14px; }
 
 .msy-bubble {
   max-width: 88%; min-width: 0;
-  padding: 10px 13px;
+  padding: 11px 14px;
   border-radius: 14px;
   word-break: break-word;
   background: var(--bg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-  line-height: 1.72;
+  line-height: 1.75;
 }
-.msy-row.assistant .msy-bubble { flex: 1; max-width: calc(100% - 34px); border-top-left-radius: 5px; }
+.msy-row.assistant .msy-bubble { flex: 1; max-width: calc(100% - 34px); border-top-left-radius: 4px; }
 .msy-row.user .msy-bubble {
-  background: linear-gradient(140deg, var(--primary), color-mix(in srgb, var(--primary) 70%, var(--accent)));
+  background: var(--primary);
   border-color: transparent;
   color: var(--primary-fg);
-  border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 4px;
   white-space: pre-wrap;
-  box-shadow: 0 4px 14px rgba(var(--primary-rgb), .26);
+  box-shadow: none;
 }
 .msy-row.sys .msy-bubble {
   background: transparent; border: none; box-shadow: none;
@@ -610,27 +603,30 @@
 .msy-chip.weak { font-weight: 500; color: var(--text-dim); border-style: dashed; box-shadow: none; }
 .msy-chip .msy-i { width: 13px; height: 13px; }
 
-/* 自评：这道题掌握得怎么样。四档各自带颜色，不用悬停也看得出轻重 */
+/* 自评：这道题掌握得怎么样。四档等分一整行（窄了自动折行，每行仍然撑满），
+   平时是中性按钮、只有图标带档位颜色，悬停才整块染色 —— 一排四种彩色描边太闹。 */
 .msy-rate {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
-  margin-top: 10px; padding: 9px 10px; border-radius: 11px;
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 12px; padding: 10px; border-radius: 12px;
   background: var(--bg-soft); border: 1px solid var(--border);
 }
-.msy-rate-label { font-size: 11px; font-weight: 600; color: var(--text-dim); width: 100%; margin-bottom: 1px; }
+.msy-rate-label { width: 100%; font-size: 11.5px; font-weight: 600; color: var(--text-dim); }
 .msy-rate-btn {
   --tone: var(--primary); --tone-soft: var(--primary-soft);
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px; border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--tone) 35%, var(--border));
+  flex: 1 1 0; min-width: fit-content;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 6px 8px; border-radius: 9px;
+  border: 1px solid var(--border);
   background: var(--bg);
-  color: var(--tone); font-size: 12px; font-weight: 500; font-family: inherit;
-  cursor: pointer; transition: all .15s;
+  color: var(--text); font-size: 12px; font-weight: 500; font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer; transition: background .15s, border-color .15s, color .15s;
 }
 .msy-rate-btn[data-tone="bad"] { --tone: var(--danger); --tone-soft: var(--danger-soft); }
 .msy-rate-btn[data-tone="warn"] { --tone: var(--warn); --tone-soft: var(--warn-soft); }
 .msy-rate-btn[data-tone="ok"] { --tone: var(--ok); --tone-soft: var(--ok-soft); }
-.msy-rate-btn .msy-i { width: 12px; height: 12px; }
-.msy-rate-btn:hover { transform: translateY(-1px); background: var(--tone-soft); border-color: var(--tone); }
+.msy-rate-btn .msy-i { width: 13px; height: 13px; color: var(--tone); }
+.msy-rate-btn:hover { background: var(--tone-soft); border-color: color-mix(in srgb, var(--tone) 45%, transparent); color: var(--tone); }
 .msy-rate-done {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 12px; color: var(--ok); font-weight: 600;
@@ -674,8 +670,8 @@
   position: relative; overflow: hidden;
   margin: 4px 0 14px; padding: 22px 16px 16px;
   border-radius: 16px; text-align: center;
-  background: linear-gradient(140deg, rgba(var(--primary-rgb), .1), color-mix(in srgb, var(--accent) 16%, transparent));
-  border: 1px solid rgba(var(--primary-rgb), .4);
+  background: var(--primary-soft);
+  border: 1px solid rgba(var(--primary-rgb), .3);
   animation: msy-pop .32s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes msy-pop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -701,17 +697,17 @@
 /* 空状态 */
 .msy-empty { text-align: center; padding: 10px 6px 8px; animation: msy-in .3s ease-out; }
 .msy-empty .msy-empty-icon {
-  width: 52px; height: 52px; margin: 6px auto 12px;
-  border-radius: 17px;
-  background: linear-gradient(140deg, var(--primary), var(--accent));
+  width: 48px; height: 48px; margin: 8px auto 14px;
+  border-radius: 14px;
+  background: var(--primary-soft);
   display: flex; align-items: center; justify-content: center;
-  color: #fff;
-  box-shadow: 0 10px 26px rgba(var(--primary-rgb), .34), inset 0 1px 0 rgba(255, 255, 255, .25),
-              0 0 0 6px rgba(var(--primary-rgb), .08), 0 0 0 12px rgba(var(--primary-rgb), .04);
+  color: var(--primary);
+  border: 1px solid rgba(var(--primary-rgb), .2);
+  box-shadow: 0 0 0 6px rgba(var(--primary-rgb), .05);
 }
-.msy-empty .msy-empty-icon .msy-i { width: 25px; height: 25px; }
+.msy-empty .msy-empty-icon .msy-i { width: 23px; height: 23px; }
 .msy-empty .msy-empty-title {
-  font-size: 16px; color: var(--text); font-weight: 700;
+  font-size: 15.5px; color: var(--text); font-weight: 650;
   line-height: 1.5; margin-bottom: 4px; letter-spacing: .3px;
 }
 .msy-empty .msy-empty-desc {
@@ -746,26 +742,23 @@
   color: var(--primary); font-weight: 600;
 }
 .msy-empty .msy-start {
-  margin-top: 14px; padding: 10px 26px; border-radius: 12px; border: none;
-  background: linear-gradient(140deg, var(--primary), var(--accent)); color: #fff;
-  font-size: 13.5px; font-weight: 650; font-family: inherit; cursor: pointer;
+  margin-top: 16px; padding: 10px 28px; border-radius: 999px; border: none;
+  background: var(--primary); color: var(--primary-fg);
+  font-size: 13.5px; font-weight: 600; font-family: inherit; cursor: pointer;
   display: inline-flex; align-items: center; gap: 7px;
-  box-shadow: 0 6px 18px rgba(var(--primary-rgb), .36), inset 0 1px 0 rgba(255, 255, 255, .22);
-  transition: transform .15s, box-shadow .15s, filter .15s;
+  box-shadow: 0 4px 14px rgba(var(--primary-rgb), .3);
+  transition: transform .15s, box-shadow .15s, background .15s;
 }
 .msy-empty .msy-start:hover {
-  filter: brightness(1.06); transform: translateY(-1px);
-  box-shadow: 0 9px 24px rgba(var(--primary-rgb), .46), inset 0 1px 0 rgba(255, 255, 255, .22);
+  background: var(--primary-hover); transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(var(--primary-rgb), .38);
 }
 .msy-empty .msy-start:active { transform: translateY(0); }
-.msy-root[data-theme="dark"] .msy-empty .msy-start,
+/* 深色下主色是亮青，白字对比不够，实心主色块里的字和图标统一用深色 */
 .msy-root[data-theme="dark"] .msy-logo,
-.msy-root[data-theme="dark"] .msy-avatar,
-.msy-root[data-theme="dark"] .msy-empty .msy-empty-icon,
 .msy-root[data-theme="dark"] .msy-fab,
-.msy-root[data-theme="dark"] .msy-round.msy-send:not([data-state="stop"]),
-.msy-root[data-theme="dark"] .msy-row.user .msy-bubble { background: linear-gradient(140deg, #5b55e8, #7c5cf0); color: #fff; }
-.msy-root[data-theme="dark"] .msy-row.user .msy-bubble code { background: rgba(255, 255, 255, .2); }
+.msy-root[data-theme="dark"] .msy-round.msy-send:not([data-state="stop"]) { color: var(--primary-fg); }
+.msy-root[data-theme="dark"] .msy-row.user .msy-bubble code { background: rgba(0, 0, 0, .18); }
 
 /* 往上翻历史时出现：一键回到最新 */
 .msy-jump {
@@ -781,22 +774,22 @@
 .msy-jump .msy-i { width: 12px; height: 12px; }
 .msy-jump[data-show="1"] { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 .msy-jump:hover { color: var(--primary); border-color: var(--primary); }
-.msy-jump[data-new="1"] { color: #fff; background: var(--primary); border-color: var(--primary); }
+.msy-jump[data-new="1"] { color: var(--primary-fg); background: var(--primary); border-color: var(--primary); }
 
 /* ---------------- 底部输入 ----------------
    输入框、麦克风、发送合成一张「输入卡片」，聚焦时整张卡片亮起来 */
 .msy-foot { flex: none; border-top: 1px solid var(--border); background: var(--bg); }
 .msy-input-row {
-  display: flex; align-items: flex-end; gap: 6px;
-  margin: 10px 10px 6px; padding: 5px 5px 5px 2px;
-  border: 1px solid var(--border-strong); border-radius: 16px;
-  background: var(--bg-soft);
-  transition: border-color .15s, box-shadow .15s, background .15s;
+  display: flex; align-items: flex-end; gap: 4px;
+  margin: 10px 12px 6px; padding: 5px 5px 5px 4px;
+  border: 1px solid var(--border-strong); border-radius: 14px;
+  background: var(--bg);
+  transition: border-color .15s, box-shadow .15s;
 }
-.msy-input-row:hover { border-color: color-mix(in srgb, var(--primary) 30%, var(--border-strong)); }
+.msy-input-row:hover { border-color: color-mix(in srgb, var(--primary) 35%, var(--border-strong)); }
 .msy-input-row:focus-within {
-  border-color: var(--primary); background: var(--bg);
-  box-shadow: 0 0 0 4px rgba(var(--primary-rgb), .12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), .14);
 }
 .msy-input-wrap { flex: 1; min-width: 0; position: relative; display: flex; }
 
@@ -812,20 +805,25 @@
 .msy-input-clear .msy-i { width: 12px; height: 12px; }
 .msy-input-clear:hover { background: var(--border-strong); color: var(--text); }
 
+/* 滚动条只在内容真的超过最大高度时才出现（JS 里切 data-scroll），
+   否则 Chrome 会给一行高的输入框也画一条灰色滚动条 */
 .msy-input {
   flex: 1; min-height: 34px; max-height: 132px;
-  resize: none; overflow-y: auto;
-  padding: 7px 28px 7px 10px; border-radius: 10px;
+  resize: none; overflow-y: hidden;
+  padding: 7px 28px 7px 8px; border-radius: 10px;
   border: none;
   background: transparent; color: var(--text);
   font-family: inherit; font-size: 13.5px; line-height: 1.55;
   outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
 }
-.msy-input::placeholder { color: var(--text-faint); }
+.msy-input[data-scroll="1"] { overflow-y: auto; }
+.msy-input::placeholder { color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .msy-input:disabled { opacity: .55; cursor: not-allowed; }
 
 .msy-round {
-  flex: none; width: 34px; height: 34px; border-radius: 11px;
+  flex: none; width: 34px; height: 34px; border-radius: 10px;
   border: none; background: transparent;
   color: var(--text-dim); cursor: pointer; padding: 0;
   display: flex; align-items: center; justify-content: center;
@@ -835,14 +833,13 @@
 .msy-round:hover:not(:disabled) { background: var(--bg-hover); color: var(--text); }
 .msy-round:disabled { opacity: .45; cursor: not-allowed; }
 .msy-round.msy-send {
-  background: linear-gradient(140deg, var(--primary), var(--accent));
+  background: var(--primary);
   color: #fff;
-  box-shadow: 0 3px 10px rgba(var(--primary-rgb), .32);
 }
-.msy-round.msy-send:hover:not(:disabled) { filter: brightness(1.08); color: #fff; }
+.msy-round.msy-send:hover:not(:disabled) { background: var(--primary-hover); color: #fff; }
+.msy-root[data-theme="dark"] .msy-round.msy-send:hover:not(:disabled):not([data-state="stop"]) { color: var(--primary-fg); }
 .msy-round.msy-send[data-state="stop"] {
   background: var(--danger); color: #fff;
-  box-shadow: 0 3px 10px rgba(var(--danger-rgb), .3);
 }
 .msy-round.msy-mic[data-state="recording"] {
   background: var(--danger); color: #fff;
@@ -862,7 +859,7 @@
 
 .msy-foot-bar {
   display: flex; align-items: center; gap: 6px; flex-wrap: wrap; row-gap: 6px;
-  padding: 0 12px 9px;
+  padding: 0 12px 10px;
   font-size: 11.5px; color: var(--text-faint);
 }
 .msy-foot-bar label, .msy-foot-bar button { white-space: nowrap; flex: none; }
@@ -1000,7 +997,8 @@
     const input = NS.h('textarea', {
       class: 'msy-input',
       rows: 1,
-      placeholder: '输入你的回答，或点麦克风说话…（Enter 发送）',
+      placeholder: '输入你的回答，或点麦克风说话…',
+      title: 'Enter 发送，Shift+Enter 换行',
     });
     const micBtn = NS.h('button', { class: 'msy-round msy-mic', type: 'button', title: '语音输入（按 M 或 Alt+Shift+V）' }, [
       icon('interview'),
@@ -1493,7 +1491,7 @@
             ? `开口回答上面的问题${voice}…`
             : modeId === 'quiz'
               ? '直接点上面的选项，或打字回答…'
-              : `和 AI ${m.label}…（Enter 发送，Shift+Enter 换行）`;
+              : `和 AI ${m.label}…`;
       },
 
       /* -------- 消息 -------- */
@@ -1567,7 +1565,7 @@
             NS.h('i', {
               style: `left:${Math.round((i / 17) * 100)}%;` +
                 `animation-delay:${(i % 6) * 0.12}s;` +
-                `background:${['#4f46e5', '#7c5cf0', '#059669', '#f59e0b', '#ef4444'][i % 5]}`,
+                `background:${['#0f766e', '#3cc7b5', '#f5b301', '#e8794f', '#7aa874'][i % 5]}`,
             })
           );
         }
@@ -1704,8 +1702,7 @@
       setInput(v, { focus = false } = {}) {
         input.value = v;
         input.dispatchEvent(new Event('input'));
-        input.style.height = 'auto';
-        input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
+        fitInput();
         syncClearBtn();
         if (focus) input.focus();
       },
@@ -1715,8 +1712,7 @@
         const end = input.selectionEnd ?? start;
         input.value = input.value.slice(0, start) + v + input.value.slice(end);
         input.dispatchEvent(new Event('input'));
-        input.style.height = 'auto';
-        input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
+        fitInput();
         syncClearBtn();
         input.focus();
       },
@@ -1852,9 +1848,24 @@
       inputClear.hidden = !input.value;
     };
 
-    input.addEventListener('input', () => {
+    /**
+     * 输入框随内容长高，到 132px 封顶后才出滚动条。
+     * 空的时候直接回到一行：Chrome 算 scrollHeight 会把折行的 placeholder 也算进去，
+     * 以前长提示会把空输入框撑高，再配上一条滚动条。
+     */
+    function fitInput() {
       input.style.height = 'auto';
+      if (!input.value) {
+        input.style.height = '';
+        input.dataset.scroll = '0';
+        return;
+      }
       input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
+      input.dataset.scroll = input.scrollHeight > 132 ? '1' : '0';
+    }
+
+    input.addEventListener('input', () => {
+      fitInput();
       syncClearBtn();
     });
 

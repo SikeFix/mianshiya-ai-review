@@ -2,7 +2,7 @@
 (function () {
   const NS = globalThis.MSY || (globalThis.MSY = {});
 
-  NS.log = (...args) => console.log('%c[面试鸭AI]', 'color:#6366f1', ...args);
+  NS.log = (...args) => console.log('%c[面试鸭AI]', 'color:#0f766e', ...args);
   NS.warn = (...args) => console.warn('%c[面试鸭AI]', 'color:#f59e0b', ...args);
 
   /** 建 DOM。h('div', {class:'x', onclick:fn}, [子元素或字符串]) */
