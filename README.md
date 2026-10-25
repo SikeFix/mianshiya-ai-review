@@ -67,6 +67,8 @@
 
 ### 1. 装扩展
 
+> 第一次装、或者想看更新和卸载步骤，看完整的 **[安装手册](INSTALL.md)**。
+
 1. 打开 Chrome 或 Edge，地址栏输入 `chrome://extensions`（Edge 是 `edge://extensions`）
 2. 打开右上角的**开发者模式**
 3. 点**加载已解压的扩展程序**
