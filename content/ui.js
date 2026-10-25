@@ -1091,11 +1091,14 @@
      * 悬浮球和面板共用一个锚点（右下角）。悬浮球很小，可以拖到很高的位置；
      * 但同一个锚点套到 640px 高的面板上，顶部就跑出屏幕了，标题栏都够不着。
      * 所以面板单独再夹一次：保证整个面板留在可视区里。
+     * 悬浮球也要夹：位置是存下来的，在大窗口里拖到的位置，换到小窗口就整个跑到屏幕外，
+     * 球和面板都找不着了。
      */
     function applyPos() {
       const { right, bottom } = state.pos;
-      fab.style.right = `${right}px`;
-      fab.style.bottom = `${bottom}px`;
+      const fs = fab.offsetWidth || 52;
+      fab.style.right = `${clamp(right, 4, Math.max(4, window.innerWidth - fs - 4))}px`;
+      fab.style.bottom = `${clamp(bottom, 4, Math.max(4, window.innerHeight - fs - 4))}px`;
       const w = panel.offsetWidth || state.size.width;
       const h = panel.offsetHeight || state.size.height;
       panel.style.right = `${clamp(right, 4, Math.max(4, window.innerWidth - w - 4))}px`;

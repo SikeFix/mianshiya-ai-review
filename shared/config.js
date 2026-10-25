@@ -447,6 +447,8 @@ MSY.PERSONAS = [
 MSY.DEFAULT_SETTINGS = {
   version: 1,
   enabled: true,
+  // 解除面试鸭的禁止复制（content/unlock-copy.js），只放开页面上已经显示的内容
+  unlockCopy: true,
 
   ui: {
     collapsed: false,

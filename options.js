@@ -1303,6 +1303,7 @@
     $('uiWidth').value = settings.ui.width;
     $('uiHeight').value = settings.ui.height;
     $('globalEnabled').checked = Boolean(settings.enabled);
+    $('unlockCopy').checked = settings.unlockCopy !== false;
   }
 
   $('uiTheme').addEventListener('change', async () => {
@@ -1327,6 +1328,10 @@
 
   $('globalEnabled').addEventListener('change', async () => {
     settings = await S.set({ enabled: $('globalEnabled').checked });
+  });
+
+  $('unlockCopy').addEventListener('change', async () => {
+    settings = await S.set({ unlockCopy: $('unlockCopy').checked });
   });
 
   /* ============================ 导入导出 ============================ */

@@ -46,6 +46,17 @@
         "https://mianshiya.com/*"
       ],
       "js": [
+        "content/unlock-copy.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.mianshiya.com/*",
+        "https://mianshiya.com/*"
+      ],
+      "js": [
         "shared/config.js",
         "shared/store.js",
         "shared/notes.js",
