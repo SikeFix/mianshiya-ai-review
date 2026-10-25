@@ -613,7 +613,9 @@ async def main():
     with open(os.path.join(ext, "manifest.json"), encoding="utf-8") as f:
         mf = json.load(f)
     mf["host_permissions"] = ["http://localhost/*", "http://127.0.0.1/*"]
-    mf["content_scripts"][0]["matches"] += ["http://localhost/*", "http://127.0.0.1/*"]
+    # 每个注入点都要加：第一个是 document_start 的解除复制脚本，主体在后面
+    for cs in mf["content_scripts"]:
+        cs["matches"] += ["http://localhost/*", "http://127.0.0.1/*"]
     with open(os.path.join(ext, "manifest.json"), "w", encoding="utf-8") as f:
         json.dump(mf, f, ensure_ascii=False, indent=2)
 

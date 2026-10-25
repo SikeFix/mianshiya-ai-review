@@ -52,7 +52,7 @@ async def main():
 
     with open(os.path.join(DIST, "manifest.json"), encoding="utf-8") as f:
         mf = json.load(f)
-    refs = list(mf["content_scripts"][0]["js"]) + [
+    refs = [js for cs in mf["content_scripts"] for js in cs["js"]] + [
         mf["background"]["service_worker"],
         mf["action"]["default_popup"],
         mf["options_ui"]["page"],

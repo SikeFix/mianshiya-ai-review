@@ -288,7 +288,9 @@ async def main():
     with open(mf_path, encoding="utf-8") as f:
         mf = json.load(f)
     mf["host_permissions"] = ["http://localhost/*", "http://127.0.0.1/*"]
-    mf["content_scripts"][0]["matches"] += ["http://localhost/*", "http://127.0.0.1/*"]
+    # 每个注入点都要加：第一个是 document_start 的解除复制脚本，主体在后面
+    for cs in mf["content_scripts"]:
+        cs["matches"] += ["http://localhost/*", "http://127.0.0.1/*"]
     with open(mf_path, "w", encoding="utf-8") as f:
         json.dump(mf, f, ensure_ascii=False, indent=2)
 
@@ -1338,6 +1340,75 @@ async def main():
         await pop.wait_for_timeout(400)
         check("popup 里有「随机来一道」", await pop.locator("#btnRandom").count() == 1)
         check("popup 里有「学习报告」", await pop.locator("#btnReport").count() == 1)
+
+        # ================= 20.9 解除站点的复制限制 =================
+        stage("20.9 解除面试鸭的禁止复制")
+        cp = await ctx.new_page()
+        await cp.goto(f"{BASE}{Q_REDIS}", wait_until="domcontentloaded", timeout=30000)
+        await cp.wait_for_selector("#msy-ai-host", state="attached", timeout=10000)
+        # 夹具剥掉了站点脚本，这里照着真实站点的做法补一个拦截器：
+        # body 内联 user-select:none，document 捕获阶段拦 copy / 右键 / Ctrl+C
+        await cp.evaluate(
+            """() => {
+                document.body.style.userSelect = 'none';
+                const block = (e) => { e.preventDefault(); e.stopPropagation(); };
+                for (const t of ['copy', 'cut', 'contextmenu', 'selectstart']) {
+                    document.addEventListener(t, block, true);
+                    document.body.addEventListener(t, block, false);
+                }
+                document.addEventListener('keydown', (e) => {
+                    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c') block(e);
+                }, true);
+            }"""
+        )
+        copy_js = """() => {
+            document.activeElement?.blur(); // 面板输入框默认有焦点，按键会落到那里
+            const el = document.querySelector('h1') || document.querySelector('p');
+            const r = document.createRange();
+            r.selectNodeContents(el);
+            const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+            return { text: String(s).trim(), us: getComputedStyle(el).userSelect };
+        }"""
+
+        async def try_copy():
+            await cp.evaluate("navigator.clipboard.writeText('<<哨兵>>')")
+            info = await cp.evaluate(copy_js)
+            await cp.keyboard.press("ControlOrMeta+c")
+            await cp.wait_for_timeout(250)
+            return info, await cp.evaluate("navigator.clipboard.readText()")
+
+        info, clip = await try_copy()
+        check("正文恢复可选中", info["us"] == "text", info["us"])
+        check("Ctrl/⌘+C 能复制出选中的文字", clip.strip() == info["text"] and clip != "<<哨兵>>", clip[:40])
+        ctx_menu = await cp.evaluate(
+            """() => !document.body.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }))"""
+        )
+        check("右键菜单不再被拦", ctx_menu is False)
+        check("我们的样式没被页面清掉", await cp.evaluate("!!document.getElementById('msy-unlock-copy')"))
+
+        # 关掉开关后，站点的限制原样生效
+        await sw.evaluate(
+            """async () => {
+                const cur = (await chrome.storage.local.get('msy_settings')).msy_settings || {};
+                await chrome.storage.local.set({ msy_settings: { ...cur, unlockCopy: false } });
+            }"""
+        )
+        await cp.wait_for_timeout(400)
+        info, clip = await try_copy()
+        check("关掉开关后恢复站点原样（选不中）", info["us"] == "none", info["us"])
+        check("关掉开关后复制照样被拦", clip == "<<哨兵>>", clip[:40])
+        await sw.evaluate(
+            """async () => {
+                const cur = (await chrome.storage.local.get('msy_settings')).msy_settings || {};
+                await chrome.storage.local.set({ msy_settings: { ...cur, unlockCopy: true } });
+            }"""
+        )
+        await cp.close()
+
+        # 设置页上有这个开关
+        await opt.locator('#tabs button[data-tab="ui"]').click()
+        await opt.wait_for_timeout(300)
+        check("设置页有「允许复制」开关且默认打开", await opt.locator("#unlockCopy").is_checked())
 
         # ================= 21. 真实站点冒烟 =================
         stage("21. 真实站点冒烟测试（2 秒内完成，避开反调试）")
